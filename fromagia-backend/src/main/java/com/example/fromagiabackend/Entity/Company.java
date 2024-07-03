@@ -20,6 +20,9 @@ public class Company {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "contact_number")
     private String contactNumber;
 
