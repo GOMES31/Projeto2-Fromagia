@@ -3,6 +3,9 @@ package com.example.fromagiabackend.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "clients")
 @Data
@@ -24,4 +27,7 @@ public class Client {
 
     @Column(name = "nif")
     private String nif;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Order> orders = new ArrayList<>();
 }
