@@ -27,7 +27,5 @@ public class Stock {
     @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL)
     private List<StockItem> stockItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
-    private List<Order> orders = new ArrayList<>();
 
 }
