@@ -6,7 +6,7 @@ Application for cheese production managament, with all steps including getting p
 ## FRONTEND
 Developed two frontends:
   - JAVAFX
-  -  ThymeLeaf
+  - Angular
 
 ## BACKEND
 Backend developed with Spring Boot with the following dependencies:
