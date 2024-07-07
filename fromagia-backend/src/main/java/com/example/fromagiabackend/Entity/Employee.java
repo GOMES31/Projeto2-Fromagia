@@ -41,4 +41,8 @@ public class Employee {
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
+    @OneToOne(mappedBy = "employee")
+    private User user;
+
+
 }
