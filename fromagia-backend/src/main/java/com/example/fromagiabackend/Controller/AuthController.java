@@ -26,12 +26,12 @@ public class AuthController {
         userService = _userService;
     }
     @GetMapping("/login")
-    public String showLoginPage(Model model, RedirectAttributes redirectAttributes, HttpSession session){
+    public String showLoginPage(Model model, HttpSession session){
         User currentUser = (User) session.getAttribute("currentUser");
 
         if (Objects.nonNull(currentUser)) {
             model.addAttribute("user",currentUser);
-            return "redirect:/home";
+            return "home";
         }
 
         model.addAttribute("user",new User());
@@ -43,7 +43,7 @@ public class AuthController {
     public String login(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes, HttpSession session){
         User validUser = userService.findByUsername(user.getUsername());
 
-        String redirectUrl = "redirect:/login";
+        String returnUrl = "redirect:/login/login";
         String message;
 
         if (validUser == null) {
@@ -55,11 +55,11 @@ public class AuthController {
         else {
             message = "Login successful!";
             session.setAttribute("currentUser", validUser);
-            redirectUrl = "redirect:/home";
+            returnUrl = "home";
         }
 
         redirectAttributes.addFlashAttribute(validUser == null || !validUser.getPassword().equals(user.getPassword()) ? "error" : "message", message);
-        return redirectUrl;
+        return returnUrl;
     }
 
     @GetMapping("/home")
@@ -68,7 +68,7 @@ public class AuthController {
 
         if (Objects.isNull(currentUser)) {
             redirectAttributes.addFlashAttribute("error","You are not logged in. Please login to access the content!");
-            return "redirect:/login";
+            return "redirect:/login/login";
         }
 
         model.addAttribute("user",currentUser);
@@ -82,7 +82,7 @@ public class AuthController {
             session.invalidate();
         }
 
-        return "redirect:/login";
+        return "login/login";
     }
 
 }
