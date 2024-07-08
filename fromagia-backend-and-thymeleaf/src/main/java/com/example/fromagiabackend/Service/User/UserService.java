@@ -10,7 +10,5 @@ public interface UserService {
     List<User> findAll();
     User findByUsername(String username);
 
-    String findPasswordByUsername(String username);
-
     void save(User user);
 }
