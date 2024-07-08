@@ -4,9 +4,13 @@ import com.example.fromagiabackend.Entity.User;
 import com.example.fromagiabackend.Service.User.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,48 +31,54 @@ public class AuthController {
     }
     @GetMapping("/login")
     public String showLoginPage(Model model, HttpSession session){
-        User currentUser = (User) session.getAttribute("currentUser");
+        User currentUser = (User) session.getAttribute("user");
 
         if (Objects.nonNull(currentUser)) {
             model.addAttribute("user",currentUser);
-            return "home";
+            return "redirect:/auth/home";
         }
 
         model.addAttribute("user",new User());
 
-        return "login";
+        return "auth/login";
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes, HttpSession session){
-        User validUser = userService.findByUsername(user.getUsername());
+    public String login( @ModelAttribute("user") @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session){
 
-        String returnUrl = "redirect:/login/login";
-        String message;
-
-        if (validUser == null) {
-            message = "Invalid username. Please try again!";
-        }
-        else if (!validUser.getPassword().equals(user.getPassword())) {
-            message = "Invalid password. Please try again!";
-        }
-        else {
-            message = "Login successful!";
-            session.setAttribute("currentUser", validUser);
-            returnUrl = "home";
+        if(bindingResult.hasErrors()){
+            return "auth/login";
         }
 
-        redirectAttributes.addFlashAttribute(validUser == null || !validUser.getPassword().equals(user.getPassword()) ? "error" : "message", message);
-        return returnUrl;
+        User dbUser = userService.findByUsername(user.getUsername());
+
+        if(Objects.isNull(dbUser)) {
+            bindingResult.rejectValue("username", "error.user", "Utilizador não encontrado!");
+            return "auth/login";
+        }
+
+        String dbPassword = dbUser.getPassword();
+        String inputPassword = user.getPassword();
+
+
+        if(!Objects.equals(dbPassword,inputPassword)){
+            bindingResult.rejectValue("password", "error.password", "Password incorreta!");
+            return "auth/login";
+        }
+
+        session.setAttribute("user",dbUser);
+        redirectAttributes.addFlashAttribute("message","Login efetuado com sucesso!");
+        return "redirect:/auth/home";
+
     }
 
     @GetMapping("/home")
     public String showHomePage(Model model,HttpSession session, RedirectAttributes redirectAttributes){
-        User currentUser = (User) session.getAttribute("currentUser");
+        User currentUser = (User) session.getAttribute("user");
 
         if (Objects.isNull(currentUser)) {
-            redirectAttributes.addFlashAttribute("error","You are not logged in. Please login to access the content!");
-            return "redirect:/login/login";
+            redirectAttributes.addFlashAttribute("error","Tens que fazer login para poder aceder a esta página!");
+            return "redirect:/auth/login";
         }
 
         model.addAttribute("user",currentUser);
@@ -76,13 +86,11 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request){
-        HttpSession session = request.getSession(false);
-        if(session != null){
-            session.invalidate();
-        }
+    public String logout(HttpServletRequest request,HttpSession session){
 
-        return "login/login";
+        session.invalidate();
+
+        return "redirect:/auth/login";
     }
 
 }

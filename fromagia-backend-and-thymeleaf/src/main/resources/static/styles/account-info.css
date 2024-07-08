@@ -1,0 +1,19 @@
+.fr-center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+label{
+    margin-top: 2rem;
+}
+
+.fr-title{
+    margin-bottom: 3rem;
+}
+
+.fr-button,.fr-button:hover,.fr-button:active{
+    margin-top: 2rem;
+}
+

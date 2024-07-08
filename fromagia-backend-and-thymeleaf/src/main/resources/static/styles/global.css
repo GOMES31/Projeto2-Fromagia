@@ -85,11 +85,133 @@ html, body {
     color: var(--yellow-100);
 }
 
+@media (max-width: 30rem) {
+    .full-height {
+        height: auto;
+    }
+    .center-content {
+        padding: 0.625rem;
+    }
+    .fr-left, .fr-right {
+        padding: 0.625rem;
+        text-align: center;
+    }
+    .fr-left h1 {
+        font-size: 1.5rem;
+    }
+    .fr-desc {
+        font-size: 0.8rem;
+    }
+    .w-75 {
+        width: 100% !important;
+    }
+    .fr-button {
+        padding: 0.5rem 2rem;
+    }
+    form {
+        text-align: left;
+    }
+    label {
+        text-align: left;
+        display: block;
+    }
+}
+
 @media (max-width: 48rem) {
     .full-height {
         height: auto;
     }
     .center-content {
-        padding: 20px;
+        padding: 1.25rem;
+    }
+    .fr-left, .fr-right {
+        padding: 1.25rem;
+        text-align: center;
+    }
+    .fr-left h1 {
+        font-size: 2rem;
+    }
+    .fr-desc {
+        font-size: 1rem;
+    }
+    .w-75 {
+        width: 100% !important;
+    }
+    form {
+        text-align: left;
+    }
+    label {
+        text-align: left;
+        display: block;
+    }
+}
+
+@media (max-width: 64rem) {
+    .full-height {
+        height: auto;
+    }
+    .fr-left, .fr-right {
+        padding: 1.25rem;
+        text-align: center;
+    }
+    .fr-left h1 {
+        font-size: 2.5rem;
+    }
+    .fr-desc {
+        font-size: 1.2rem;
+    }
+    .w-75 {
+        width: 85% !important;
+    }
+    form {
+        text-align: left;
+    }
+    label {
+        text-align: left;
+        display: block;
+    }
+}
+
+@media (min-width: 64rem) and (max-width: 75rem) {
+    .fr-left, .fr-right {
+        padding: 2.5rem;
+    }
+    .fr-left h1 {
+        font-size: 3rem;
+    }
+    .fr-desc {
+        font-size: 1.3rem;
+    }
+    .w-75 {
+        width: 70% !important;
+    }
+    form {
+        text-align: left;
+    }
+    label {
+        text-align: left;
+        display: block;
+    }
+}
+
+@media (min-width: 75rem) {
+    .fr-left, .fr-right {
+        padding: 3.75rem;
+    }
+    .fr-left h1 {
+        font-size: 3.5rem;
+    }
+    .fr-desc {
+        font-size: 1.5rem;
+    }
+    .w-75 {
+        width: 60% !important;
+    }
+    form {
+        text-align: left;
+    }
+    label {
+        text-align: left;
+        display: block;
     }
 }

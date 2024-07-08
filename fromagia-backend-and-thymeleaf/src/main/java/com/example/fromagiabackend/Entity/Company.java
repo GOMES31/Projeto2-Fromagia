@@ -43,7 +43,7 @@ public class Company {
     private User user;
 
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
-    private Stock stock;
+    private Stock stock = new Stock();
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Employee> employees = new ArrayList<>();

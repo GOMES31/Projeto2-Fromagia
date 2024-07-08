@@ -20,12 +20,10 @@ public class User{
     private Integer id;
 
     @NotEmpty(message = "Nome de utilizador não pode estar vazio!")
-    @Size(min = 6, message = "Tamanho do username que ter no mínimo 6 caracteres!")
     @Column(name = "username")
     private String username;
 
     @NotEmpty(message = "Palavra-passe não pode estar vazia!")
-    @Size(min = 8, message = "Palavra-passe tem que ter no mínimo 8 caracteres!")
     @Column(name = "password")
     private String password;
 
