@@ -10,7 +10,7 @@
 <div class="container">
   <h2 class="mt-4">Register Account</h2>
 
-  <form th:action="@{/register/initialform}" method="post" th:object="${user}">
+  <form action="/register/initialform" method="post" th:object="${user}">
     <div class="mb-3">
       <label for="username" class="form-label">Username:</label>
       <input type="text" class="form-control" id="username" th:field="*{username}" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''">

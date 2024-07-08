@@ -3,35 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Info</title>
+  <title>Client Registration Form</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+    .form-group {
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
-  <h2 class="mt-4">Client Info</h2>
-  <form th:action="@{/register/client}" method="post" th:object="${user}">
-    <div class="mb-3">
+  <h2 class="mt-4">Client Registration Form</h2>
+
+  <form action="/register/client" method="post" th:object="${client}">
+
+    <div class="form-group">
       <label for="name" class="form-label">Name:</label>
-      <input type="text" class="form-control" id="name" th:field="*{client.name}" th:classappend="${#fields.hasErrors('client.name')} ? 'is-invalid' : ''">
-      <div class="invalid-feedback" th:if="${#fields.hasErrors('client.name')}" th:errors="*{client.name}"></div>
+      <input type="text" class="form-control" id="name" th:field="*{name}" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
     </div>
 
-    <div class="mb-3">
+    <div class="form-group">
       <label for="email" class="form-label">Email:</label>
-      <input type="email" class="form-control" id="email" th:field="*{client.email}" th:classappend="${#fields.hasErrors('client.email')} ? 'is-invalid' : ''">
-      <div class="invalid-feedback" th:if="${#fields.hasErrors('client.email')}" th:errors="*{client.email}"></div>
+      <input type="email" class="form-control" id="email" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
     </div>
 
-    <div class="mb-3">
+    <div class="form-group">
       <label for="contactNumber" class="form-label">Contact Number:</label>
-      <input type="text" class="form-control" id="contactNumber" th:field="*{client.contactNumber}" th:classappend="${#fields.hasErrors('client.contactNumber')} ? 'is-invalid' : ''">
-      <div class="invalid-feedback" th:if="${#fields.hasErrors('client.contactNumber')}" th:errors="*{client.contactNumber}"></div>
+      <input type="text" class="form-control" id="contactNumber" th:field="*{contactNumber}" th:classappend="${#fields.hasErrors('contactNumber')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('contactNumber')}" th:errors="*{contactNumber}"></div>
     </div>
 
-    <div class="mb-3">
+    <div class="form-group">
       <label for="nif" class="form-label">NIF:</label>
-      <input type="text" class="form-control" id="nif" th:field="*{client.nif}" th:classappend="${#fields.hasErrors('client.nif')} ? 'is-invalid' : ''">
-      <div class="invalid-feedback" th:if="${#fields.hasErrors('client.nif')}" th:errors="*{client.nif}"></div>
+      <input type="text" class="form-control" id="nif" th:field="*{nif}" th:classappend="${#fields.hasErrors('nif')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}"></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Register</button>
@@ -39,6 +46,7 @@
 
 </div>
 
+<!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 </body>

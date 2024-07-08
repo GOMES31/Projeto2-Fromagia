@@ -59,12 +59,14 @@ public class RegisterController {
             return "register/initialform";
         }
 
-        AccountType accountType = user.getAccountType();
-
-        if (accountType == null) {
-            redirectAttributes.addFlashAttribute("error", "Please select an account type.");
-            return "redirect:/register/initialform";
+        User tempUser = userService.findByUsername(user.getUsername());
+        if (Objects.nonNull(tempUser)) {
+            bindingResult.rejectValue("username", "error.user", "Utilizador já registado!");
+            return "register/initialform";
         }
+
+
+        AccountType accountType = user.getAccountType();
 
         user.setAccountType(accountType);
         session.setAttribute("user", user);
@@ -72,17 +74,17 @@ public class RegisterController {
 
         switch(accountType){
             case COMPANY:
-                return "register/company";
+                return "redirect:/register/company";
             case CLIENT:
-                return "register/client";
+                return "redirect:/register/client";
             case SUPPLIER:
-                return "register/supplier";
+                return "redirect:/register/supplier";
             default:
-                return "register/initialform";
+                return "redirect:/register/initialform";
         }
     }
 
-// todo
+// todo - similar code to client
     @GetMapping("/company")
     public String showCompanyForm(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
@@ -98,23 +100,22 @@ public class RegisterController {
         return "redirect:/register/company";
     }
 
-    // todo
+    // todo - finish this
 
     @GetMapping("/client")
     public String showClientForm(Model model,HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "register/initialform";
+            return "redirect:/register/initialform";
         }
 
         Client client = new Client();
 
-        user.setClient(client);
-        model.addAttribute("user",user);
-        return "redirect:/register/client";
+        model.addAttribute("client",client);
+        return "register/client";
     }
 
-    // todo
+    // todo - similar code to client
     @GetMapping("/supplier")
     public String showSupplierForm(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
@@ -129,10 +130,11 @@ public class RegisterController {
         model.addAttribute("user", user);
         return "redirect:/register/supplier";
     }
-// todo
+// todo - similar code to client
     @PostMapping("/company")
     public String submitCompanyForm(@ModelAttribute("user") User user, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
         User sessionUser = (User) session.getAttribute("user");
+
         if (sessionUser == null) {
             return "register/initialform";
         }
@@ -156,18 +158,18 @@ public class RegisterController {
 
     // TODO - FIXING THIS CODE
     @PostMapping("/client")
-    public String submitClientForm(@ModelAttribute("user") @Valid User user,BindingResult bindingResult, RedirectAttributes redirectAttributes,HttpSession session) {
-
-        User sessionUser = (User) session.getAttribute("user");
-        if (sessionUser == null) {
-            return "register/initialform";
-        }
+    public String submitClientForm(@ModelAttribute("client") @Valid Client client,BindingResult bindingResult, RedirectAttributes redirectAttributes,HttpSession session) {
 
         if (bindingResult.hasErrors()) {
             return "register/client";
         }
 
-        Client client = user.getClient();
+
+        User sessionUser = (User) session.getAttribute("user");
+
+        if (sessionUser == null) {
+            return "redirect:/register/initialform";
+        }
 
         Client newClient = new Client(client.getName(), client.getEmail(), client.getContactNumber(), client.getNif());
         newClient.setUser(sessionUser);
@@ -181,7 +183,7 @@ public class RegisterController {
         return redirect;
     }
 
-    // todo
+    // todo - similar to client
     @PostMapping("/supplier")
     public String submitSupplierForm(@ModelAttribute("user") @Valid User user,BindingResult bindingResult, RedirectAttributes redirectAttributes,HttpSession session) {
 
@@ -209,12 +211,6 @@ public class RegisterController {
 
 
     private String verifyAndManageUser(RedirectAttributes redirectAttributes, HttpSession session, User sessionUser) {
-        User tempUser = userService.findByUsername(sessionUser.getUsername());
-        if (Objects.nonNull(tempUser)) {
-            redirectAttributes.addFlashAttribute("error", "Username already registered. Please try again");
-            return "redirect:/register/initialform";
-        }
-
         userService.save(sessionUser);
         session.removeAttribute("user");
         redirectAttributes.addFlashAttribute("message", "Registration successful!");
