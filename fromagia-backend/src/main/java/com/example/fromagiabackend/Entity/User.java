@@ -2,6 +2,7 @@ package com.example.fromagiabackend.Entity;
 
 import com.example.fromagiabackend.Entity.Enums.AccountType;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -19,7 +20,7 @@ public class User{
     private Integer id;
 
     @NotEmpty(message = "Nome de utilizador não pode estar vazio!")
-    @Size(min = 5, max = 20, message = "Tamanho do username tem que ser entre 5 e 20 caracteres!")
+    @Size(min = 6, message = "Tamanho do username que ter no mínimo 6 caracteres!")
     @Column(name = "username")
     private String username;
 
@@ -42,6 +43,7 @@ public class User{
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
+    @Valid
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;

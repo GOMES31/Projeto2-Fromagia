@@ -9,22 +9,24 @@
 <body>
 <div class="container">
   <h2 class="mt-4">Register Account</h2>
+
   <form action="/register/initialform" method="post" th:object="${user}">
     <div class="mb-3">
       <label for="username" class="form-label">Username:</label>
-      <input type="text" class="form-control" id="username" th:field="*{username}" required>
-      <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="invalid-feedback"></div>
+      <input type="text" class="form-control" id="username" th:field="*{username}" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
     </div>
 
     <div class="mb-3">
       <label for="password" class="form-label">Password:</label>
-      <input type="password" class="form-control" id="password" th:field="*{password}" required>
-      <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="invalid-feedback"></div>
+      <input type="password" class="form-control" id="password" th:field="*{password}" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
     </div>
 
     <div class="mb-3">
       <label for="accountType" class="form-label">Account Type:</label>
       <select class="form-select" id="accountType" th:field="*{accountType}" required>
+        <option value="" disabled>Select account type</option>
         <option value="COMPANY">Company</option>
         <option value="CLIENT">Client</option>
         <option value="SUPPLIER">Supplier</option>
