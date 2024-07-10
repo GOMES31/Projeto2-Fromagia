@@ -23,7 +23,6 @@ public class Order {
     @Column(name = "order_code")
     private String orderCode;
 
-    @CreationTimestamp
     @Column(name = "received_date")
     private LocalDateTime receivedDate;
 
@@ -37,10 +36,10 @@ public class Order {
     @Column(name = "total_amount")
     private BigDecimal totalAmount;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Invoice invoice;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @ManyToOne
@@ -54,4 +53,10 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
+
+    public void calculateTotalAmount() {
+        this.totalAmount = orderItems.stream()
+                .map(item -> item.getProduct().getPrice().multiply(item.getQuantity()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }

@@ -39,7 +39,10 @@ public class Client {
     @OneToOne(mappedBy = "client")
     private User user;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
+    private Stock stock = new Stock();
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
 

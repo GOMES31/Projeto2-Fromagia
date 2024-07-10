@@ -11,6 +11,7 @@
     --orange-60: #FF9500;
     --orange-40: #FFA200;
     --orange-20: #FFAA00;
+    --camel: #F9DBBD;
 }
 
 html, body {
@@ -31,7 +32,7 @@ html, body {
 }
 
 .fr-title {
-    color: var(--yellow-100);
+    color: var(--orange-100);
     text-align: center;
 }
 
@@ -84,6 +85,15 @@ html, body {
 .fr-link:active{
     color: var(--yellow-100);
 }
+
+.alert {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
 
 @media (max-width: 30rem) {
     .full-height {

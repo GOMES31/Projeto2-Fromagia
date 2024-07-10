@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface UserService {
 
-    List<User> findAll();
     User findByUsername(String username);
 
     void save(User user);

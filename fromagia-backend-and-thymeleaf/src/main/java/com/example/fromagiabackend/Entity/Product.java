@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.CollectionIdJdbcTypeCode;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,8 +27,8 @@ public class Product {
     @Column(name = "price")
     private BigDecimal price;
 
-    @ManyToMany(mappedBy = "products")
-    private List<ProductionHistory> productionHistories;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductionHistory> productionHistory = new ArrayList<>();
 
 
 }
