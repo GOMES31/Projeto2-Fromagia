@@ -27,8 +27,10 @@ public class Product {
     @Column(name = "price")
     private BigDecimal price;
 
+    @OneToOne(mappedBy = "productRequired")
+    private ProductionRequirements productionRequirements;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductionHistory> productionHistory = new ArrayList<>();
-
 
 }
