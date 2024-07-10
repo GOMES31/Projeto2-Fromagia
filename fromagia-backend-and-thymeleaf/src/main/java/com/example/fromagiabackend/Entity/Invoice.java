@@ -28,17 +28,17 @@ public class Invoice {
     private Company company;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "supplier_id", referencedColumnName = "id")
     private Supplier supplier;
 
     @CreationTimestamp
     @Column(name = "emission_date")
     private LocalDateTime emissionDate;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<InvoiceLine> invoiceLines = new ArrayList<>();
 }

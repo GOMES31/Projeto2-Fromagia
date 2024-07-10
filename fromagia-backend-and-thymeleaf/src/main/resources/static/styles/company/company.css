@@ -1,0 +1,137 @@
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.nav-item {
+    list-style-type: none;
+    margin-block: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.nav-link {
+    color: black;
+    text-decoration: none;
+    text-align: center;
+}
+
+.nav-item i{
+    font-size: 1.5rem;
+}
+
+.nav-link:hover {
+    background-color: var(--orange-100);
+    color: white;
+}
+
+.nav-link:focus{
+    background-color: var(--orange-100);
+    color: white;
+}
+.fr-menu-left{
+    background-color: var(--yellow-100);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 2rem;
+}
+
+.fr-menu-right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    padding: 2rem;
+}
+
+.fr-welcome{
+    color: var(--orange-100);
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+.fr-table-title{
+    color: var(--orange-100);
+    font-size: 2rem;
+    font-weight: 500;
+    position: absolute;
+    top: 1rem;
+}
+
+.fr-user{
+    font-size: 2rem;
+}
+
+.fr-type{
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 1.1rem;
+    color: black;
+}
+
+.fr-type span{
+    color: var(--orange-100);
+    font-weight: 600;
+}
+
+#fr-paragraph-top{
+    position: absolute;
+    margin-bottom: 3rem;
+    right: 1rem;
+    font-size: 1rem;
+    color: black;
+    text-align: right;
+}
+
+.fr-footer-paragraph{
+    position: absolute;
+    bottom: 0.5rem;
+    right: 1rem;
+    font-size: 1rem;
+    color: black;
+    text-align: right;
+}
+
+.fr-table{
+    position: absolute;
+    top: 5rem;
+    width: 90%;
+    border-collapse: collapse;
+}
+
+.fr-table th{
+    text-align: center;
+    background-color: var(--orange-40);
+    color: black;
+}
+
+.fr-table tr{
+    text-align: center;
+    background-color: var(--camel);
+}
+
+.fr-table th,
+.fr-table td {
+    border: 0.1rem solid black;
+    padding: 0.5rem;
+}
+
+
+.logout-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    color: black;
+}
+
+.logout-icon:hover{
+    color: var(--orange-100);
+}
+

@@ -24,7 +24,16 @@ public class Stock {
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
-    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    private Client client;
+
+    @OneToOne
+    @JoinColumn(name = "supplier_id", referencedColumnName = "id")
+    private Supplier supplier;
+
+
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StockItem> stockItems = new ArrayList<>();
 
 

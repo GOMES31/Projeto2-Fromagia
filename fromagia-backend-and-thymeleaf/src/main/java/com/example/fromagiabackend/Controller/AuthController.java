@@ -5,12 +5,10 @@ import com.example.fromagiabackend.Service.User.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Objects;
+
+import static com.example.fromagiabackend.Controller.AppController.getHomeRedirectUrl;
 
 @Controller
 @RequestMapping("/auth")
@@ -35,7 +35,7 @@ public class AuthController {
 
         if (Objects.nonNull(currentUser)) {
             model.addAttribute("user",currentUser);
-            return "redirect:/auth/home";
+            return getHomeRedirectUrl(currentUser);
         }
 
         model.addAttribute("user",new User());
@@ -68,29 +68,18 @@ public class AuthController {
 
         session.setAttribute("user",dbUser);
         redirectAttributes.addFlashAttribute("message","Login efetuado com sucesso!");
-        return "redirect:/auth/home";
+
+        return getHomeRedirectUrl(dbUser);
 
     }
 
-    @GetMapping("/home")
-    public String showHomePage(Model model,HttpSession session, RedirectAttributes redirectAttributes){
-        User currentUser = (User) session.getAttribute("user");
-
-        if (Objects.isNull(currentUser)) {
-            redirectAttributes.addFlashAttribute("error","Tens que fazer login para poder aceder a esta página!");
-            return "redirect:/auth/login";
-        }
-
-        model.addAttribute("user",currentUser);
-        return "home";
-    }
-
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request,HttpSession session){
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
 
         session.invalidate();
 
         return "redirect:/auth/login";
     }
+
 
 }

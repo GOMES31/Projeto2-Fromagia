@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "production_historys")
+@Table(name = "production_history")
 @Data
 public class ProductionHistory {
 
@@ -24,11 +24,7 @@ public class ProductionHistory {
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product_production_history",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "production_history_id")
-    )
-    private List<Product> products;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
 }

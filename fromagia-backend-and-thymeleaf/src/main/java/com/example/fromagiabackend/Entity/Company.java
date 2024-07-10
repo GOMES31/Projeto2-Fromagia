@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "companys")
+@Table(name = "companies")
 @Data
 public class Company {
 
@@ -42,25 +42,22 @@ public class Company {
     @OneToOne(mappedBy = "company")
     private User user;
 
-    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Stock stock = new Stock();
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Employee> employees = new ArrayList<>();
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductionHistory> productionHistory = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "company_suppliers",
-            joinColumns = @JoinColumn(name = "company_id"),
-            inverseJoinColumns = @JoinColumn(name = "supplier_id")
-    )
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Supplier> suppliers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
+
 
 
     public Company(){

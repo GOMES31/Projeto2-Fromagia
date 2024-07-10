@@ -39,10 +39,14 @@ public class Supplier {
     @OneToOne(mappedBy = "supplier")
     private User user;
 
-    @ManyToMany(mappedBy = "suppliers")
-    private List<Company> companies = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    private Company company;
 
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "supplier", cascade = CascadeType.ALL)
+    private Stock stock = new Stock();
+
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
     public Supplier(){
