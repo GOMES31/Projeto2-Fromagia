@@ -26,4 +26,5 @@ public class StockItem {
 
     @Column(name = "quantity")
     private BigDecimal quantity;
+
 }

@@ -34,7 +34,10 @@ public class RegisterController {
     private final SupplierService supplierService;
 
     @Autowired
-    public RegisterController(UserService _userService,CompanyService _companyService,ClientService _clientService,SupplierService _supplierService){
+    public RegisterController(UserService _userService,
+                              CompanyService _companyService,
+                              ClientService _clientService,
+                              SupplierService _supplierService){
         userService = _userService;
         companyService = _companyService;
         clientService = _clientService;
