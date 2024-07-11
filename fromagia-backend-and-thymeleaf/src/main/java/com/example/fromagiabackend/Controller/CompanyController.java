@@ -2,16 +2,22 @@ package com.example.fromagiabackend.Controller;
 
 import com.example.fromagiabackend.Entity.*;
 import com.example.fromagiabackend.Entity.Enums.AccountType;
+import com.example.fromagiabackend.Entity.Helpers.EmployeeForm;
 import com.example.fromagiabackend.Service.Company.CompanyService;
 import com.example.fromagiabackend.Service.Employee.EmployeeService;
 import com.example.fromagiabackend.Service.ProductionHistory.ProductionHistoryService;
 import com.example.fromagiabackend.Service.Stock.StockService;
 import com.example.fromagiabackend.Service.Supplier.SupplierService;
+import com.example.fromagiabackend.Service.User.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,19 +39,23 @@ public class CompanyController {
 
     private final EmployeeService employeeService;
 
+    private final UserService userService;
+
 
     @Autowired
     public CompanyController(CompanyService _companyService,
                              StockService _stockService,
                              ProductionHistoryService _productionHistoryService,
                              SupplierService _supplierService,
-                             EmployeeService _employeeService){
+                             EmployeeService _employeeService,
+                             UserService _userService){
 
         companyService = _companyService;
         stockService = _stockService;
         productionHistoryService = _productionHistoryService;
         supplierService = _supplierService;
         employeeService = _employeeService;
+        userService = _userService;
     }
 
     @GetMapping("/home")
@@ -159,6 +169,69 @@ public class CompanyController {
         model.addAttribute("employees", employees);
 
         return "company/employees";
+    }
+
+    @GetMapping("/employees/new")
+    public String showNewEmployeePage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        if (!model.containsAttribute("employee")) {
+
+            EmployeeForm employeeForm = new EmployeeForm();
+            model.addAttribute("employeeForm",employeeForm);
+        }
+
+        return "company/employees-new";
+    }
+    @PostMapping("/employees/new")
+    public String addNewEmployee(@ModelAttribute("employeeForm") @Valid EmployeeForm employeeForm, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "company/employees-new";
+        }
+
+        User dbUser = userService.findByUsername(employeeForm.getUsername());
+
+        if (Objects.nonNull(dbUser)) {
+            bindingResult.rejectValue("username", "error.user", "Utilizador já registado!");
+            return "company/employees-new";
+        }
+
+        Company employeeCompany = currentUser.getCompany();
+
+        User newUser = new User();
+
+        newUser.setUsername(employeeForm.getUsername());
+        newUser.setPassword(employeeForm.getPassword());
+        newUser.setAccountType(AccountType.EMPLOYEE);
+
+        Employee newEmployee = new Employee(employeeForm.getName(), employeeForm.getEmail(), employeeForm.getSalary(),employeeForm.getCompanyPosition());
+        newEmployee.setUser(newUser);
+        newEmployee.setCompany(employeeCompany);
+
+        newUser.setEmployee(newEmployee);
+        userService.save(newUser);
+
+        employeeService.save(newEmployee);
+        companyService.save(employeeCompany);
+
+        redirectAttributes.addFlashAttribute("message", "Funcionário adicionado com sucesso!");
+
+        session.removeAttribute("employeeForm");
+
+        return "redirect:/company/employees";
     }
 
     private String handleUserAuthenticationAndPermissions(User currentUser, RedirectAttributes redirectAttributes) {

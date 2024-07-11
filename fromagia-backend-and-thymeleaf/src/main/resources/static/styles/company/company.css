@@ -1,3 +1,9 @@
+.form-container{
+    max-width: 50%;
+    width: 100%;
+    margin: auto;
+}
+
 .menu {
     display: flex;
     flex-direction: column;
@@ -22,21 +28,20 @@
 }
 
 .nav-link:hover {
-    background-color: var(--orange-100);
+    background-color: var(--fromagia-secondary);
     color: white;
 }
 
 .nav-link:focus{
-    background-color: var(--orange-100);
+    background-color: var(--fromagia-secondary);
     color: white;
 }
 .fr-menu-left{
-    background-color: var(--yellow-100);
+    background-color: var(--fromagia-primary);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     padding: 2rem;
 }
 
@@ -45,22 +50,31 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    height: auto;
     padding: 2rem;
 }
 
 .fr-welcome{
-    color: var(--orange-100);
+    color: var(--fromagia-secondary);
     font-size: 3rem;
     font-weight: 600;
 }
 
 .fr-table-title{
-    color: var(--orange-100);
+    color: var(--fromagia-secondary);
     font-size: 2rem;
     font-weight: 500;
     position: absolute;
     top: 1rem;
+}
+
+.fr-form-title{
+    color: var(--fromagia-secondary);
+    font-size: 2rem;
+    font-weight: 500;
+    position: relative;
+    top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .fr-user{
@@ -76,7 +90,7 @@
 }
 
 .fr-type span{
-    color: var(--orange-100);
+    color: var(--fromagia-secondary);
     font-weight: 600;
 }
 
@@ -98,6 +112,7 @@
     text-align: right;
 }
 
+
 .fr-table{
     position: absolute;
     top: 5rem;
@@ -105,21 +120,54 @@
     border-collapse: collapse;
 }
 
+
 .fr-table th{
     text-align: center;
-    background-color: var(--orange-40);
+    background-color: var(--table-headers);
     color: black;
 }
 
 .fr-table tr{
     text-align: center;
-    background-color: var(--camel);
+    background-color: var(--table-background);
 }
 
 .fr-table th,
 .fr-table td {
     border: 0.1rem solid black;
     padding: 0.5rem;
+}
+
+.fr-table-button{
+    background-color: var(--fromagia-primary);
+    border-radius: 1rem;
+    color: black;
+    font-size: 1.1rem;
+    font-weight: 400;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+}
+
+
+.fr-table-button:hover{
+    background-color: var(--fromagia-secondary);
+    border-radius: 1rem;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 400;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+}
+
+.fr-table-button:active{
+    background-color: var(--fromagia-secondary);
+    border-radius: 1rem;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 400;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+}
+
+.fr-btn-label{
+    margin-left: 0.5rem;
 }
 
 
@@ -131,7 +179,7 @@
     color: black;
 }
 
-.logout-icon:hover{
-    color: var(--orange-100);
-}
 
+.logout-icon:hover{
+    color: var(--fromagia-secondary);
+}

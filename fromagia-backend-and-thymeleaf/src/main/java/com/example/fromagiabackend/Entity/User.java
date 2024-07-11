@@ -41,7 +41,6 @@ public class User{
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
-    @Valid
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;

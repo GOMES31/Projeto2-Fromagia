@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,5 +70,6 @@ public class Company {
         this.contactNumber = contactNumber;
         this.nif = nif;
     }
+
 
 }

@@ -54,7 +54,7 @@ public class RegisterController {
     }
 
     @PostMapping("/initialform")
-    public String submitInitialForm(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String submitInitialForm(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, HttpSession session) {
 
         if (bindingResult.hasErrors()) {
             return "register/initialform";
