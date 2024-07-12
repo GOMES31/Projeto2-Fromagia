@@ -2,9 +2,11 @@ package com.example.fromagiabackend.Controller;
 
 import com.example.fromagiabackend.Entity.*;
 import com.example.fromagiabackend.Entity.Enums.AccountType;
+import com.example.fromagiabackend.Entity.Enums.CompanyPosition;
 import com.example.fromagiabackend.Entity.Helpers.EmployeeForm;
 import com.example.fromagiabackend.Service.Company.CompanyService;
 import com.example.fromagiabackend.Service.Employee.EmployeeService;
+import com.example.fromagiabackend.Service.Product.ProductService;
 import com.example.fromagiabackend.Service.ProductionHistory.ProductionHistoryService;
 import com.example.fromagiabackend.Service.Stock.StockService;
 import com.example.fromagiabackend.Service.Supplier.SupplierService;
@@ -38,9 +40,7 @@ public class CompanyController {
     private final SupplierService supplierService;
 
     private final EmployeeService employeeService;
-
     private final UserService userService;
-
 
     @Autowired
     public CompanyController(CompanyService _companyService,
@@ -119,15 +119,16 @@ public class CompanyController {
         User currentUser = (User) session.getAttribute("user");
 
         String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
-        if (authenticationResult != null) {
+
+        if(authenticationResult != null) {
             return authenticationResult;
         }
 
-        Company company = currentUser.getCompany();
+        Company userCompany = currentUser.getCompany();
 
-        List<ProductionHistory> productionHistoryList = productionHistoryService.findCompanyProductHistory(company);
+        List<ProductionHistory> productionHistoryList = productionHistoryService.findCompanyProductHistory(userCompany);
 
-        model.addAttribute("company", company);
+        model.addAttribute("company", userCompany);
         model.addAttribute("productionHistory", productionHistoryList);
 
         return "company/production-history";
@@ -137,16 +138,18 @@ public class CompanyController {
     public String showSuppliersPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
 
+
+
         String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
         if (authenticationResult != null) {
             return authenticationResult;
         }
 
-        Company company = currentUser.getCompany();
+        Company userCompany = currentUser.getCompany();
 
-        List<Supplier> suppliers = supplierService.findCompanySuppliers(company);
+        List<Supplier> suppliers = supplierService.findCompanySuppliers(userCompany);
 
-        model.addAttribute("company", company);
+        model.addAttribute("company", userCompany);
         model.addAttribute("suppliers", suppliers);
 
         return "company/suppliers";
@@ -156,16 +159,18 @@ public class CompanyController {
     public String showEmployeesPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
 
+
         String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
         if (authenticationResult != null) {
             return authenticationResult;
         }
 
-        Company company = currentUser.getCompany();
 
-        List<Employee> employees = employeeService.findCompanyEmployees(company);
+        Company userCompany = currentUser.getCompany();
 
-        model.addAttribute("company", company);
+        List<Employee> employees = employeeService.findCompanyEmployees(userCompany);
+
+        model.addAttribute("company", userCompany);
         model.addAttribute("employees", employees);
 
         return "company/employees";
@@ -175,7 +180,7 @@ public class CompanyController {
     public String showNewEmployeePage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
 
-        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser,redirectAttributes);
         if (authenticationResult != null) {
             return authenticationResult;
         }
@@ -188,11 +193,14 @@ public class CompanyController {
 
         return "company/employees-new";
     }
+
     @PostMapping("/employees/new")
     public String addNewEmployee(@ModelAttribute("employeeForm") @Valid EmployeeForm employeeForm, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
 
-        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser,redirectAttributes);
+
 
         if (authenticationResult != null) {
             return authenticationResult;
@@ -209,7 +217,7 @@ public class CompanyController {
             return "company/employees-new";
         }
 
-        Company employeeCompany = currentUser.getCompany();
+        Company userCompany = currentUser.getCompany();
 
         User newUser = new User();
 
@@ -219,13 +227,13 @@ public class CompanyController {
 
         Employee newEmployee = new Employee(employeeForm.getName(), employeeForm.getEmail(), employeeForm.getSalary(),employeeForm.getCompanyPosition());
         newEmployee.setUser(newUser);
-        newEmployee.setCompany(employeeCompany);
+        newEmployee.setCompany(userCompany);
 
         newUser.setEmployee(newEmployee);
         userService.save(newUser);
 
         employeeService.save(newEmployee);
-        companyService.save(employeeCompany);
+        companyService.save(userCompany);
 
         redirectAttributes.addFlashAttribute("message", "Funcionário adicionado com sucesso!");
 
