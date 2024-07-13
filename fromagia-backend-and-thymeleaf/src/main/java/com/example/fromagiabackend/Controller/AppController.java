@@ -21,7 +21,7 @@ public class AppController {
             case SUPPLIER:
                 return "redirect:/supplier/home";
             case EMPLOYEE:
-                return "redirect:/employee/home";
+                return "redirect:/employees/home";
             default:
                 return "redirect:/auth/login";
         }
