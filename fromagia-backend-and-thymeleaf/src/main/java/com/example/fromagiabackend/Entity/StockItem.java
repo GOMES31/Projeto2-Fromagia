@@ -16,7 +16,7 @@ public class StockItem {
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "stock_id", referencedColumnName = "id")
     private Stock stock;
 
@@ -26,5 +26,9 @@ public class StockItem {
 
     @Column(name = "quantity")
     private BigDecimal quantity;
+
+    @Column(name = "for_sale")
+    private Boolean forSale;
+
 
 }

@@ -1,10 +1,7 @@
 package com.example.fromagiabackend.Controller;
 
-import com.example.fromagiabackend.Entity.Client;
-import com.example.fromagiabackend.Entity.Company;
+import com.example.fromagiabackend.Entity.*;
 import com.example.fromagiabackend.Entity.Enums.AccountType;
-import com.example.fromagiabackend.Entity.Supplier;
-import com.example.fromagiabackend.Entity.User;
 import com.example.fromagiabackend.Service.Client.ClientService;
 import com.example.fromagiabackend.Service.Company.CompanyService;
 import com.example.fromagiabackend.Service.Supplier.SupplierService;
@@ -148,6 +145,9 @@ public class RegisterController {
         userService.save(sessionUser);
         redirectAttributes.addFlashAttribute("message", "Registo feito com sucesso!");
 
+
+        Stock stock = new Stock();
+        company.setStock(stock);
 
         companyService.save(newCompany);
 

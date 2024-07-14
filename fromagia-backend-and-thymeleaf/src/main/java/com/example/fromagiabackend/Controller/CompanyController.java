@@ -2,11 +2,9 @@ package com.example.fromagiabackend.Controller;
 
 import com.example.fromagiabackend.Entity.*;
 import com.example.fromagiabackend.Entity.Enums.AccountType;
-import com.example.fromagiabackend.Entity.Enums.CompanyPosition;
-import com.example.fromagiabackend.Entity.Helpers.EmployeeForm;
+import com.example.fromagiabackend.Entity.Helpers.EmployeeDTO;
 import com.example.fromagiabackend.Service.Company.CompanyService;
 import com.example.fromagiabackend.Service.Employee.EmployeeService;
-import com.example.fromagiabackend.Service.Product.ProductService;
 import com.example.fromagiabackend.Service.ProductionHistory.ProductionHistoryService;
 import com.example.fromagiabackend.Service.Stock.StockService;
 import com.example.fromagiabackend.Service.Supplier.SupplierService;
@@ -71,6 +69,7 @@ public class CompanyController {
         return "company/home";
     }
 
+    // TODO - TESTING REFACTOR ON THIS METHOD
     @GetMapping("/orders")
     public String showOrdersPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
@@ -82,7 +81,8 @@ public class CompanyController {
 
         Company company = currentUser.getCompany();
 
-        List<Order> orders = companyService.getCompanyOrders(company.getId());
+
+        List<Order> orders = companyService.getCompanyAcceptedOrRejectedOrders(company.getId());
 
         model.addAttribute("company",company);
         model.addAttribute("orders",orders);
@@ -124,11 +124,11 @@ public class CompanyController {
             return authenticationResult;
         }
 
-        Company userCompany = currentUser.getCompany();
+        Company company = currentUser.getCompany();
 
-        List<ProductionHistory> productionHistoryList = productionHistoryService.findCompanyProductHistory(userCompany);
+        List<ProductionHistory> productionHistoryList = productionHistoryService.findCompanyProductHistory(company);
 
-        model.addAttribute("company", userCompany);
+        model.addAttribute("company", company);
         model.addAttribute("productionHistory", productionHistoryList);
 
         return "company/production-history";
@@ -145,11 +145,11 @@ public class CompanyController {
             return authenticationResult;
         }
 
-        Company userCompany = currentUser.getCompany();
+        Company company = currentUser.getCompany();
 
-        List<Supplier> suppliers = supplierService.findCompanySuppliers(userCompany);
+        List<Supplier> suppliers = supplierService.findCompanySuppliers(company);
 
-        model.addAttribute("company", userCompany);
+        model.addAttribute("company", company);
         model.addAttribute("suppliers", suppliers);
 
         return "company/suppliers";
@@ -166,11 +166,11 @@ public class CompanyController {
         }
 
 
-        Company userCompany = currentUser.getCompany();
+        Company company = currentUser.getCompany();
 
-        List<Employee> employees = employeeService.findCompanyEmployees(userCompany);
+        List<Employee> employees = employeeService.findCompanyEmployees(company);
 
-        model.addAttribute("company", userCompany);
+        model.addAttribute("company", company);
         model.addAttribute("employees", employees);
 
         return "company/employees";
@@ -185,17 +185,16 @@ public class CompanyController {
             return authenticationResult;
         }
 
-        if (!model.containsAttribute("employee")) {
-
-            EmployeeForm employeeForm = new EmployeeForm();
-            model.addAttribute("employeeForm",employeeForm);
+        if (!model.containsAttribute("employeeDTO")) {
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            model.addAttribute("employeeDTO", employeeDTO);
         }
 
         return "company/employees-new";
     }
 
     @PostMapping("/employees/new")
-    public String addNewEmployee(@ModelAttribute("employeeForm") @Valid EmployeeForm employeeForm, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes){
+    public String addNewEmployee(@ModelAttribute("employeeDTO") @Valid EmployeeDTO employeeDTO, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
 
 
@@ -210,7 +209,7 @@ public class CompanyController {
             return "company/employees-new";
         }
 
-        User dbUser = userService.findByUsername(employeeForm.getUsername());
+        User dbUser = userService.findByUsername(employeeDTO.getUsername());
 
         if (Objects.nonNull(dbUser)) {
             bindingResult.rejectValue("username", "error.user", "Utilizador já registado!");
@@ -221,11 +220,11 @@ public class CompanyController {
 
         User newUser = new User();
 
-        newUser.setUsername(employeeForm.getUsername());
-        newUser.setPassword(employeeForm.getPassword());
+        newUser.setUsername(employeeDTO.getUsername());
+        newUser.setPassword(employeeDTO.getPassword());
         newUser.setAccountType(AccountType.EMPLOYEE);
 
-        Employee newEmployee = new Employee(employeeForm.getName(), employeeForm.getEmail(), employeeForm.getSalary(),employeeForm.getCompanyPosition());
+        Employee newEmployee = new Employee(employeeDTO.getName(), employeeDTO.getEmail(), employeeDTO.getSalary(), employeeDTO.getCompanyPosition());
         newEmployee.setUser(newUser);
         newEmployee.setCompany(userCompany);
 
@@ -237,7 +236,7 @@ public class CompanyController {
 
         redirectAttributes.addFlashAttribute("message", "Funcionário adicionado com sucesso!");
 
-        session.removeAttribute("employeeForm");
+        session.removeAttribute("employeeDTO");
 
         return "redirect:/company/employees";
     }
@@ -263,5 +262,6 @@ public class CompanyController {
 
         return null;
     }
+
 
 }

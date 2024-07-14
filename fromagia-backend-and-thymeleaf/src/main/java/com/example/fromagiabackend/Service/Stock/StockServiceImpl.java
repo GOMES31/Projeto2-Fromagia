@@ -3,6 +3,7 @@ package com.example.fromagiabackend.Service.Stock;
 import com.example.fromagiabackend.Entity.Company;
 import com.example.fromagiabackend.Entity.Stock;
 import com.example.fromagiabackend.Entity.StockItem;
+import com.example.fromagiabackend.Entity.Supplier;
 import com.example.fromagiabackend.Repository.StockRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<StockItem> getStockProducts(Integer id) {
         Stock stock = stockRepository.findById(id).orElse(null);
 
@@ -42,4 +43,15 @@ public class StockServiceImpl implements StockService {
 
         return Collections.emptyList();
     }
+
+    @Override
+    public Stock getCompanyStock(Company company){
+        return stockRepository.findStockByCompany(company);
+    }
+
+    @Override
+    public Stock getSupplierStock(Supplier supplier){
+        return stockRepository.findStockBySupplier(supplier);
+    }
+
 }

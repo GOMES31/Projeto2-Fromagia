@@ -1,6 +1,9 @@
 package com.example.fromagiabackend.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CollectionIdJdbcTypeCode;
 
@@ -21,16 +24,20 @@ public class Product {
     @Column(name = "product_code")
     private String productCode;
 
+    @NotEmpty(message = "Nome do produto não pode estar vazio!")
     @Column(name = "product_name")
     private String productName;
 
+    @NotNull(message = "Preço do produto não pode estar vazio!")
+    @Min(value = 0, message = "O preço tem que ser superior a 0!")
     @Column(name = "price")
     private BigDecimal price;
 
-    @OneToOne(mappedBy = "productRequired")
-    private ProductionRequirements productionRequirements;
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductionHistory> productionHistory = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "production_requirements", referencedColumnName = "id")
+    private ProductionRequirements productionRequirements;
 
 }

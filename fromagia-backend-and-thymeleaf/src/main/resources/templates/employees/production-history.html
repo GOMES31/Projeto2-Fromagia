@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Encomendas</title>
+  <title>Histórico de Produção</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
   <link th:href="@{/styles/global.css}" rel="stylesheet" />
@@ -91,7 +91,7 @@
         <i class="bi bi-box-arrow-right"></i>
       </a>
       <div class="w-75 fr-center">
-        <p class="fr-table-title text-center">Histórico de Encomendas</p>
+        <p class="fr-table-title text-center">Histórico de Produção</p>
       </div>
       <div class="order-table w-90 mt-4 fr-center">
         <table class="table table-striped fr-table">
@@ -99,29 +99,21 @@
           <tr>
             <th>ID</th>
             <th>Código</th>
-            <th>Data Receção</th>
-            <th>Data Envio</th>
-            <th>Estado</th>
-            <th>Total</th>
-            <th>Fatura</th>
+            <th>Nome do Produto</th>
+            <th>Quantidade Produzida</th>
+            <th>Data de Produção</th>
           </tr>
           </thead>
           <tbody>
-            <tr th:each="order : ${orders}">
-              <td th:text="${order.getId()}"></td>
-              <td th:text="${order.getOrderCode()}"></td>
-              <td th:text="${order.getReceivedDate()}"></td>
-              <td th:text="${order.getSentDate()}"></td>
-              <td th:text="${order.getOrderState()}"></td>
-              <td th:text="${order.getTotalAmount()}"></td>
-              <td>
-                <a th:if="${order.getOrderState().toString() == 'ACCEPTED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
-                  <i class="bi bi-receipt"></i>
-                </a>
-              </td>
+            <tr th:each="prodHistory : ${productionHistory}">
+              <td th:text="${prodHistory.getId()}"></td>
+              <td th:text="${prodHistory.getProduct().getProductCode()}"></td>
+              <td th:text="${prodHistory.getProduct().getProductName()}"></td>
+              <td th:text="${prodHistory.getQuantityProduced()}"></td>
+              <td th:text="${prodHistory.getProductionDate()}"></td>
             </tr>
-            <tr th:if="${#lists.isEmpty(orders)}">
-              <td colspan="7" class="text-center">Nenhuma encomenda encontrada...</td>
+            <tr th:if="${#lists.isEmpty(productionHistory)}">
+              <td colspan="8" class="text-center">Nenhum histórico de produção encontrado...</td>
             </tr>
           </tbody>
         </table>

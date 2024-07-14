@@ -10,4 +10,6 @@ public interface SupplierService {
     void save(Supplier supplier);
 
     List<Supplier> findCompanySuppliers(Company company);
+
+    List<Supplier> findSuppliersWithoutCompany();
 }

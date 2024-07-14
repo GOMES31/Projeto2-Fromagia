@@ -19,8 +19,7 @@ public class ProductionRequirements {
     @Column(name = "quantity_required")
     private BigDecimal quantityRequired;
 
-    @OneToOne
-    @JoinColumn(name = "product_required_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "product")
     private Product productRequired;
 
 }

@@ -19,17 +19,24 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public Optional<Product> getProductById(Integer id) {
-        return productRepository.findById(id);
-    }
-
-    @Override
-    public Product getProductByCode(String productCode) {
-        return productRepository.getProductByProductCode(productCode);
+    public Product getProductByProductName(String productName) {
+        return productRepository.getProductByProductName(productName);
     }
 
     @Override
     public void save(Product product) {
-        productRepository.save(product);
+
+        Product savedProduct = productRepository.save(product);
+
+        String productCode = generateProductCode(savedProduct.getId());
+
+        savedProduct.setProductCode(productCode);
+
+        productRepository.save(savedProduct);
+    }
+
+    @Override
+    public String generateProductCode(Integer id){
+        return "PROD" + id;
     }
 }

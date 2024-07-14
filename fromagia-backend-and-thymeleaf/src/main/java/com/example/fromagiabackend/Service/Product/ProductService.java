@@ -6,9 +6,10 @@ import java.util.Optional;
 
 public interface ProductService {
 
-    Optional<Product> getProductById(Integer id);
 
-    Product getProductByCode(String productCode);
+    Product getProductByProductName(String productName);
 
     void save(Product product);
+
+    String generateProductCode(Integer id);
 }
