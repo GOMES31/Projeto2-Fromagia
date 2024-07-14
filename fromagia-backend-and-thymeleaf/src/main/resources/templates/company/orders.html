@@ -76,7 +76,6 @@
             <th>Estado</th>
             <th>Total</th>
             <th>Fatura</th>
-            <th>Produtos</th>
           </tr>
           </thead>
           <tbody>
@@ -87,10 +86,14 @@
               <td th:text="${order.getSentDate() != null ? order.sentDate : 'POR ENVIAR'}"></td>
               <td th:text="${order.getOrderState()}"></td>
               <td th:text="${order.getTotalAmount()}"></td>
-              <td><a th:href="@{/orders/invoices/{id}(id=${order.getId()})}"><i class="bi bi-eye"></i></a></td>
+              <td>
+                <a th:if="${order.getOrderState().toString() == 'ACCEPTED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
+                  <i class="bi bi-receipt"></i>
+                </a>
+              </td>
             </tr>
             <tr th:if="${#lists.isEmpty(orders)}">
-              <td colspan="8" class="text-center">Nenhuma encomenda encontrada...</td>
+              <td colspan="7" class="text-center">Nenhuma encomenda encontrada...</td>
             </tr>
           </tbody>
         </table>

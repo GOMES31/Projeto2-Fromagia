@@ -9,5 +9,7 @@ public interface CompanyService {
 
     void save(Company company);
 
-    List<Order> getCompanyOrders(Integer id);
+    List<Order> getCompanyAcceptedOrRejectedOrders(Integer id);
+
+    List<Order> getCompanyPendingOrders(Integer id);
 }

@@ -1,6 +1,7 @@
 package com.example.fromagiabackend.Service.Company;
 
 import com.example.fromagiabackend.Entity.Company;
+import com.example.fromagiabackend.Entity.Enums.OrderState;
 import com.example.fromagiabackend.Entity.Order;
 import com.example.fromagiabackend.Repository.CompanyRepository;
 import org.hibernate.Hibernate;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -30,13 +32,31 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getCompanyOrders(Integer id) {
+    public List<Order> getCompanyAcceptedOrRejectedOrders(Integer id) {
 
         Company company = companyRepository.findById(id).orElse(null);
 
-        if(Objects.nonNull(company)){
+        if (Objects.nonNull(company)) {
             Hibernate.initialize(company.getOrders());
-            return new ArrayList<>(company.getOrders());
+            return company.getOrders().stream()
+                    .filter(order -> order.getOrderState() == OrderState.ACCEPTED || order.getOrderState() == OrderState.REJECTED)
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Order> getCompanyPendingOrders(Integer id) {
+
+        Company company = companyRepository.findById(id).orElse(null);
+
+        if (Objects.nonNull(company)) {
+            Hibernate.initialize(company.getOrders());
+            return company.getOrders().stream()
+                    .filter(order -> order.getOrderState() == OrderState.PENDING)
+                    .collect(Collectors.toList());
         }
 
         return Collections.emptyList();

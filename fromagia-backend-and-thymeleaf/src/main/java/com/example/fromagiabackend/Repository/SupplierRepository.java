@@ -12,4 +12,6 @@ import java.util.List;
 public interface SupplierRepository extends JpaRepository<Supplier,Integer> {
 
     List<Supplier> findByCompany(Company company);
+
+    List<Supplier> findByCompanyIsNull();
 }

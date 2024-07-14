@@ -44,7 +44,7 @@ public class Supplier {
     private Company company;
 
     @OneToOne(mappedBy = "supplier", cascade = CascadeType.ALL)
-    private Stock stock = new Stock();
+    private Stock stock;
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
@@ -57,6 +57,8 @@ public class Supplier {
         this.email = email;
         this.contactNumber = contactNumber;
         this.nif = nif;
+        this.stock = new Stock();
+        this.stock.setSupplier(this);
     }
 
 }

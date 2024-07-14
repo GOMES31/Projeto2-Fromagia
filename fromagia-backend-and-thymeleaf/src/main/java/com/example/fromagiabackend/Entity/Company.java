@@ -45,7 +45,7 @@ public class Company {
 
 
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Stock stock = new Stock();
+    private Stock stock;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Employee> employees = new ArrayList<>();
@@ -69,6 +69,8 @@ public class Company {
         this.email = email;
         this.contactNumber = contactNumber;
         this.nif = nif;
+        this.stock = new Stock();
+        this.stock.setCompany(this);
     }
 
 

@@ -65,7 +65,7 @@
       </a>
       <div class="form-container">
         <h2 class="fr-form-title text-center">Novo Funcionário</h2>
-        <form th:action="@{/company/employees/new}" method="post" th:object="${employeeForm}">
+        <form th:action="@{/company/employees/new}" method="post" th:object="${employeeDTO}">
           <div class="mb-3">
             <label for="username" class="form-label">Utilizador:</label>
             <input type="text" class="form-control" id="username" th:field="*{username}" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''">

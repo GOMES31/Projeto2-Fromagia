@@ -1,9 +1,9 @@
 :root{
-    /*Cores da conta de utilizador de um funcionário da empresa*/
-    --fromagia-primary: #40FF80;
-    --fromagia-secondary: #208040;
-    --table-headers: #30BF60;
-    --table-background: #C0FFD4;
+    /*Cores da conta de utilizador de um fornecedor*/
+    --fromagia-primary: #DDB892;
+    --fromagia-secondary: #7F5539;
+    --table-headers: #B08968;
+    --table-background: #E6CCB2;
 }
 
 .form-container{
