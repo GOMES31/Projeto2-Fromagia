@@ -1,0 +1,193 @@
+:root{
+    /*Cores da conta de utilizador de um cliente da empresa*/
+    --fromagia-primary: #AE60D3;
+    --fromagia-secondary: #7400B8;
+    --table-headers: #8B26C3;
+    --table-background: #DCACE8;
+}
+
+.form-container{
+    max-width: 50%;
+    width: 100%;
+    margin: auto;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.nav-item {
+    list-style-type: none;
+    margin-block: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.nav-link {
+    color: black;
+    text-decoration: none;
+    text-align: center;
+}
+
+.nav-item i{
+    font-size: 1.5rem;
+}
+
+.nav-link:hover {
+    background-color: var(--fromagia-secondary);
+    color: white;
+}
+
+.nav-link:focus{
+    background-color: var(--fromagia-secondary);
+    color: white;
+}
+.fr-menu-left{
+    background-color: var(--fromagia-primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.fr-menu-right {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    padding: 2rem;
+}
+
+.fr-welcome{
+    color: var(--fromagia-secondary);
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+.fr-table-title{
+    color: var(--fromagia-secondary);
+    font-size: 2rem;
+    font-weight: 500;
+    position: absolute;
+    top: 1rem;
+}
+
+.fr-form-title{
+    color: var(--fromagia-secondary);
+    font-size: 2rem;
+    font-weight: 500;
+    position: relative;
+    top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.fr-user{
+    font-size: 2rem;
+}
+
+.fr-type{
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 1.1rem;
+    color: black;
+}
+
+.fr-type span{
+    color: var(--fromagia-secondary);
+    font-weight: 600;
+}
+
+#fr-paragraph-top{
+    position: absolute;
+    margin-bottom: 3rem;
+    right: 1rem;
+    font-size: 1rem;
+    color: black;
+    text-align: right;
+}
+
+.fr-footer-paragraph{
+    position: absolute;
+    bottom: 0.5rem;
+    right: 1rem;
+    font-size: 1rem;
+    color: black;
+    text-align: right;
+}
+
+
+.fr-table{
+    position: absolute;
+    top: 5rem;
+    width: 90%;
+    border-collapse: collapse;
+}
+
+
+.fr-table th{
+    text-align: center;
+    background-color: var(--table-headers);
+    color: black;
+}
+
+.fr-table tr{
+    text-align: center;
+    background-color: var(--table-background);
+}
+
+.fr-table th,
+.fr-table td {
+    border: 0.1rem solid black;
+    padding: 0.5rem;
+}
+
+.fr-table-button{
+    background-color: var(--fromagia-primary);
+    border-radius: 1rem;
+    color: black;
+    font-size: 1.1rem;
+    font-weight: 400;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+}
+
+
+.fr-table-button:hover{
+    background-color: var(--fromagia-secondary);
+    border-radius: 1rem;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 400;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+}
+
+.fr-table-button:active{
+    background-color: var(--fromagia-secondary);
+    border-radius: 1rem;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 400;
+    padding: 0.5rem 3rem 0.5rem 3rem;
+}
+
+.fr-btn-label{
+    margin-left: 0.5rem;
+}
+
+
+.logout-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    color: black;
+}
+
+
+.logout-icon:hover{
+    color: var(--fromagia-secondary);
+}

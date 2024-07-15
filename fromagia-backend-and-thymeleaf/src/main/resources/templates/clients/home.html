@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <link th:href="@{/styles/global.css}" rel="stylesheet" />
-    <link th:href="@{/styles/suppliers.css}" rel="stylesheet" />
+    <link th:href="@{/styles/clients.css}" rel="stylesheet" />
 
 </head>
 <body>
@@ -23,45 +23,31 @@
         <div class="col-md-2 fr-menu-left">
             <nav class="menu">
                 <div class="nav-item">
-                    <a class="nav-link" th:href="@{/suppliers/home}">
+                    <a class="nav-link" th:href="@{/clients/home}">
                         <i class="bi bi-house"></i>
                         <br>
                         <span class="label">Página Inicial</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link" th:href="@{/suppliers/products/add}">
-                        <i class="bi bi-journal-plus"></i>
-                        <br>
-                        <span class="label">Adicionar Produtos</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a class="nav-link" th:href="@{/suppliers/orders}">
+                    <a class="nav-link" th:href="@{/clients/orders}">
                         <i class="bi bi-cart2"></i>
                         <br>
                         <span class="label">Encomendas</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link" th:href="@{/suppliers/orders/pending}">
+                    <a class="nav-link" th:href="@{/clients/orders/pending}">
                         <i class="bi bi-cart2"></i>
                         <br>
                         <span class="label">Encomendas Pendentes</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a class="nav-link" th:href="@{/suppliers/stock}">
+                    <a class="nav-link" th:href="@{/clients/stock}">
                         <i class="bi bi-folder"></i>
                         <br>
                         <span class="label">Stock de Produtos</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a class="nav-link" th:href="@{/suppliers/stock/add}">
-                        <i class="bi bi-folder-plus"></i>
-                        <br>
-                        <span class="label">Adicionar Stock</span>
                     </a>
                 </div>
             </nav>
@@ -74,7 +60,7 @@
                 </a>
             <div class="w-75">
                 <p class="fr-welcome text-center">Bem-vindo de volta!</p>
-                <p class="fr-user text-center"><span th:text="${user.getSupplier().getName()}"></span></p>
+                <p class="fr-user text-center"><span th:text="${user.getClient().getName()}"></span></p>
             </div>
         </div>
     </div>

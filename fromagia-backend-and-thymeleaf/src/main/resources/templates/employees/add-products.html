@@ -43,6 +43,13 @@
           </a>
         </div>
         <div class="nav-item">
+          <a class="nav-link" th:href="@{/employees/orders/pending}">
+            <i class="bi bi-cart4"></i>
+            <br>
+            <span class="label">Encomendas Pendentes</span>
+          </a>
+        </div>
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/stock}">
             <i class="bi bi-folder"></i>
             <br>
@@ -50,14 +57,7 @@
           </a>
         </div>
         <div class="nav-item">
-          <a class="nav-link" th:href="@{/employees/stock/add}">
-            <i class="bi bi-folder-plus"></i>
-            <br>
-            <span class="label">Adicionar Stock</span>
-          </a>
-        </div>
-        <div class="nav-item">
-          <a class="nav-link" th:href="@{/employees/suppliers}">
+          <a class="nav-link" th:href="@{/employees/suppliers/find}">
             <i class="bi bi-search"></i>
             <br>
             <span class="label">Pesquisar Fornecedores</span>
@@ -93,6 +93,14 @@
             <label for="quantity" class="form-label">Quantidade:</label>
             <input type="number" step="0.01" class="form-control" id="quantity" th:field="*{quantity}" th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid' : ''">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+          </div>
+          <div class="mb-3">
+            <label for="productType" class="form-label">Tipo de produto</label>
+            <select class="form-select" id="productType" th:field="*{productType}">
+              <option value="" disabled>Tipo de produto</option>
+              <option value="CHEESE">Queijo</option>
+              <option value="RAW_MATERIAL">Matéria-Prima</option>
+            </select>
           </div>
           <div class="mb-3">
             <label for="forSale" class="form-label">Produto para venda?</label>

@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +27,12 @@ public class CompanyServiceImpl implements CompanyService {
         companyRepository.save(company);
     }
 
+    @Override
+    public Optional<Company> findById(Integer id) {
+        Optional<Company> company = companyRepository.findById(id);
+        company.ifPresent(c -> Hibernate.initialize(c.getProductionHistory()));
+        return company;
+    }
     @Override
     @Transactional(readOnly = true)
     public List<Order> getCompanyAcceptedOrRejectedOrders(Integer id) {

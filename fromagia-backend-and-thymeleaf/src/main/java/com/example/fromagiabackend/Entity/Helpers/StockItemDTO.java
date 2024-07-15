@@ -1,5 +1,6 @@
 package com.example.fromagiabackend.Entity.Helpers;
 
+import com.example.fromagiabackend.Entity.Enums.ProductType;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -24,5 +25,7 @@ public class StockItemDTO {
     private BigDecimal quantity;
 
     private Boolean forSale;
+
+    private ProductType productType;
 
 }

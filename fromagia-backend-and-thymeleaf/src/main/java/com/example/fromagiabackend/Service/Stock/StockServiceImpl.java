@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -52,6 +53,13 @@ public class StockServiceImpl implements StockService {
     @Override
     public Stock getSupplierStock(Supplier supplier){
         return stockRepository.findStockBySupplier(supplier);
+    }
+
+    public List<StockItem> getSupplierStockItemsForSale(Supplier supplier) {
+        List<StockItem> stockItems = stockRepository.findStockBySupplier(supplier).getStockItems();
+        return stockItems.stream()
+                .filter(StockItem::getForSale)
+                .collect(Collectors.toList());
     }
 
 }

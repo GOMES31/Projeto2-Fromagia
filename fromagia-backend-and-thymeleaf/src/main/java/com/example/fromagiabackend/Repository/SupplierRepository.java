@@ -13,5 +13,5 @@ public interface SupplierRepository extends JpaRepository<Supplier,Integer> {
 
     List<Supplier> findByCompany(Company company);
 
-    List<Supplier> findByCompanyIsNull();
+    List<Supplier> findSupplierByCompanyIdIsNull();
 }

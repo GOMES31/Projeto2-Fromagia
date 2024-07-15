@@ -1,5 +1,7 @@
 package com.example.fromagiabackend.Entity;
 
+import com.example.fromagiabackend.Entity.Enums.AccountType;
+import com.example.fromagiabackend.Entity.Enums.ProductType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -33,11 +35,12 @@ public class Product {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_type")
+    private ProductType productType;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductionHistory> productionHistory = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "production_requirements", referencedColumnName = "id")
-    private ProductionRequirements productionRequirements;
 
 }
