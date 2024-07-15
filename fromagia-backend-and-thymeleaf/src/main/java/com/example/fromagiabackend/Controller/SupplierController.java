@@ -108,7 +108,7 @@ public class SupplierController {
         return "suppliers/add-products";
     }
 
-    @PutMapping("/products/update")
+    @PostMapping("/products/add")
     public String addNewProduct(@ModelAttribute("stockItemDTO") @Valid StockItemDTO stockItemDTO, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
 
@@ -133,6 +133,7 @@ public class SupplierController {
 
         newProduct.setProductName(stockItemDTO.getProductName());
         newProduct.setPrice(stockItemDTO.getPrice());
+        newProduct.setProductType(stockItemDTO.getProductType());
 
         productService.save(newProduct);
 

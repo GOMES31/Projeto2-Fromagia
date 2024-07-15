@@ -185,7 +185,7 @@ public class RegisterController {
 
         session.setAttribute("user",sessionUser);
 
-        return "redirect:/client/home";
+        return "redirect:/clients/home";
     }
 
     @PostMapping("/supplier")
@@ -214,6 +214,6 @@ public class RegisterController {
 
         session.setAttribute("user",sessionUser);
 
-        return "redirect:/supplier/home";
+        return "redirect:/suppliers/home";
     }
 }

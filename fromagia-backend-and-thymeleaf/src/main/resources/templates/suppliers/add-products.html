@@ -81,6 +81,13 @@
             <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
           </div>
           <div class="mb-3">
+            <label for="productType" class="form-label">Tipo de produto</label>
+            <select class="form-select" id="productType" th:field="*{productType}">
+              <option value="" disabled>Tipo de produto</option>
+              <option value="RAW_MATERIAL">Matéria-Prima</option>
+            </select>
+          </div>
+          <div class="mb-3">
             <label for="forSale" class="form-label">Produto para venda?</label>
             <select class="form-select" id="forSale" th:field="*{forSale}">
               <option value="" disabled>Produto para venda?</option>

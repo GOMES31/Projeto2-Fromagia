@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -29,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.example.fromagiabackend.Controller.AppController.getHomeRedirectUrl;
 
@@ -136,7 +134,7 @@ public class EmployeeController {
 
         Employee employee = currentUser.getEmployee();
         model.addAttribute("employee", employee);
-        return "employees/add-products";
+        return "employees/new-order";
     }
 
     @GetMapping("/stock")
@@ -275,6 +273,7 @@ public class EmployeeController {
 
         newProduct.setProductName(stockItemDTO.getProductName());
         newProduct.setPrice(stockItemDTO.getPrice());
+        newProduct.setProductType(stockItemDTO.getProductType());
 
         productService.save(newProduct);
 
@@ -307,7 +306,7 @@ public class EmployeeController {
     }
 
     // TODO - GET BACK TO THIS LATER
-    @GetMapping("/employees/suppliers/find")
+    @GetMapping("/suppliers/find")
     public String showSuppliersAvailablePage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
 
@@ -322,8 +321,6 @@ public class EmployeeController {
         if(employeePermissionsResult != null){
             return employeePermissionsResult;
         }
-
-        Company company = currentUser.getEmployee().getCompany();
         Employee employee = currentUser.getEmployee();
 
         List<Supplier> suppliers = supplierService.findSuppliersWithoutCompany();
@@ -333,13 +330,13 @@ public class EmployeeController {
         return "employees/find-suppliers";
     }
 
-    @GetMapping("/stock/add")
-    public String showAddStockPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
 
+    @GetMapping("/suppliers/stock/{id}")
+    public String showSupplierProducts(Model model, HttpSession session, RedirectAttributes redirectAttributes, @PathVariable Integer id){
         User currentUser = (User) session.getAttribute("user");
 
         String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
-        if (authenticationResult != null) {
+        if(authenticationResult != null) {
             return authenticationResult;
         }
 
@@ -350,7 +347,45 @@ public class EmployeeController {
             return employeePermissionsResult;
         }
 
+        Optional<Supplier> result = supplierService.findById(id);
+        Supplier supplier;
+        if (result.isPresent()) {
+            supplier = result.get();
+        }
+        else
+        {
+            redirectAttributes.addFlashAttribute("error","Forncedor não encontrado!");
+            return getHomeRedirectUrl(currentUser);
+        }
+
+        List<StockItem> stockItems = stockService.getSupplierStock(supplier).getStockItems();
+
+        Employee employee = currentUser.getEmployee();
+
+        model.addAttribute("supplier",supplier);
+        model.addAttribute("employee", employee);
+        model.addAttribute("stockItems",stockItems);
+        return "employees/suppliers-products";
+    }
+    @GetMapping("/production/new")
+    public String showNewProductionPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        CompanyPosition positionAllowed = CompanyPosition.PRODUCER;
+
+        String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
+        if(employeePermissionsResult != null){
+            return employeePermissionsResult;
+        }
+
         if (!model.containsAttribute("updateStockDTO")) {
+
             UpdateStockDTO updateStockDTO = new UpdateStockDTO();
             model.addAttribute("updateStockDTO",updateStockDTO);
         }
@@ -361,11 +396,12 @@ public class EmployeeController {
 
         model.addAttribute("stockItems",stockItems);
         model.addAttribute("employee",employee);
-        return "employees/add-stock";
+        return "employees/new-production";
     }
 
-    @PostMapping ("/stock/update")
-    public String updateProductStock(@ModelAttribute("updateStockDTO") @Valid UpdateStockDTO updateStockDTO, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes){
+
+    @PostMapping("/suppliers/add/{id}")
+    public String addSupplierToList(BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes, @PathVariable Integer id){
         User currentUser = (User) session.getAttribute("user");
 
         String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
@@ -373,7 +409,42 @@ public class EmployeeController {
             return authenticationResult;
         }
 
-        CompanyPosition positionAllowed = CompanyPosition.MANAGER;
+        CompanyPosition positionAllowed = CompanyPosition.PRODUCER;
+
+        String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
+        if(employeePermissionsResult != null){
+            return employeePermissionsResult;
+        }
+
+        Optional<Supplier> result = supplierService.findById(id);
+        Supplier supplier;
+        if (result.isPresent()) {
+            supplier = result.get();
+        }
+        else
+        {
+            redirectAttributes.addFlashAttribute("error","Forncedor não encontrado!");
+            return getHomeRedirectUrl(currentUser);
+        }
+
+        Company company = currentUser.getEmployee().getCompany();
+        company.getSuppliers().add(supplier);
+
+        companyService.save(company);
+
+        redirectAttributes.addFlashAttribute("message", "Fornecedor contratado com sucesso!");
+        return "redirect:/employees/suppliers";
+    }
+    @PostMapping ("/production/new")
+    public String addNewProduction(@ModelAttribute("updateStockDTO") @Valid UpdateStockDTO updateStockDTO, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        CompanyPosition positionAllowed = CompanyPosition.PRODUCER;
 
         String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
         if(employeePermissionsResult != null){
@@ -381,7 +452,7 @@ public class EmployeeController {
         }
 
         if (bindingResult.hasErrors()) {
-            return "employees/add-stock";
+            return "employees/new-production";
         }
 
         StockItem stockItem = stockItemService.findById(updateStockDTO.getStockItemId());
@@ -393,7 +464,29 @@ public class EmployeeController {
 
         stockItemService.save(stockItem);
 
-        redirectAttributes.addFlashAttribute("message", "Stock atualizado com sucesso!");
+        ProductionHistory productionHistory = new ProductionHistory();
+
+
+        productionHistory.setProduct(stockItem.getProduct());
+        productionHistory.setProductionDate(LocalDateTime.now());
+        productionHistory.setQuantityProduced(dtoQuantity);
+
+
+        Optional<Company> result = companyService.findById(currentUser.getEmployee().getCompany().getId());
+        if (result.isPresent()) {
+            Company company = result.get();
+            company.addProductionHistory(productionHistory);
+
+            companyService.save(company);
+        }
+        else{
+            redirectAttributes.addFlashAttribute("error","Este utilizador não tem nenhuma empresa associada!");
+            return getHomeRedirectUrl(currentUser);
+        }
+
+
+
+        redirectAttributes.addFlashAttribute("message", "Produção realizada com sucesso e stock atualizado com sucesso!");
         return "redirect:/employees/stock";
     }
 

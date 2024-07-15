@@ -27,12 +27,12 @@ public class Client {
     private String email;
 
     @NotEmpty(message = "Contacto não pode estar vazio!")
-    @Size(min = 9,max = 9, message = "Contacto tem que ter 9 digitos!")
+    @Size(min = 9, message = "Contacto tem que ter no minimo 9 digitos!")
     @Column(name = "contact_number")
     private String contactNumber;
 
     @NotEmpty(message = "Nome não pode estar vazio!")
-    @Size(min = 9,max = 9, message = "NIF tem que ter 9 digitos!")
+    @Size(min = 9, message = "NIF tem que ter no minimo 9 digitos!")
     @Column(name = "nif")
     private String nif;
 

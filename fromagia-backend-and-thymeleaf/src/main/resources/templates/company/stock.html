@@ -69,26 +69,28 @@
       <div class="order-table w-90 mt-4 fr-center">
         <table class="table table-striped fr-table">
           <thead>
-          <tr>
-            <th>ID</th>
-            <th>Código</th>
-            <th>Nome do Produto</th>
-            <th>Preço</th>
-            <th>Quantidade em Stock</th>
-            <th>Produto para venda?</th>
-          </tr>
-          </thead>
-          <tbody>
+            <tr>
+              <th>ID</th>
+              <th>Código</th>
+              <th>Nome do Produto</th>
+              <th>Preço</th>
+              <th>Quantidade em Stock</th>
+              <th>Tipo de Produto</th>
+              <th>Produto para venda?</th>
+            </tr>
+            </thead>
+            <tbody>
             <tr th:each="stockItem : ${stockItems}">
               <td th:text="${stockItem.getId()}"></td>
               <td th:text="${stockItem.getProduct().getProductCode()}"></td>
               <td th:text="${stockItem.getProduct().getProductName()}"></td>
               <td th:text="${stockItem.getProduct().getPrice()}"></td>
               <td th:text="${stockItem.getQuantity()}"></td>
+              <td th:text="${stockItem.getProduct().getProductType()}"></td>
               <td th:text="${stockItem.getForSale() ? 'SIM' : 'NÃO'}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(stockItems)}">
-              <td colspan="9" class="text-center">Nenhum produto em stock...</td>
+              <td colspan="7" class="text-center">Nenhum produto em stock...</td>
             </tr>
           </tbody>
         </table>

@@ -17,6 +17,7 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <div class="col-md-2 fr-menu-left">
+
       <nav class="menu">
         <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/home}">
@@ -46,6 +47,13 @@
             <span class="label">Nova Encomenda</span>
           </a>
         </div>
+        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+          <a class="nav-link" th:href="@{/employees/orders/pending}">
+            <i class="bi bi-cart-plus"></i>
+            <br>
+            <span class="label">Encomendas Pendentes</span>
+          </a>
+        </div>
         <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'PRODUCER'}">
           <a class="nav-link" th:href="@{/employees/production-history}">
             <i class="bi bi-clock-history"></i>
@@ -55,7 +63,7 @@
         </div>
         <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'PRODUCER'}">
           <a class="nav-link" th:href="@{/employees/production/new}">
-            <i class="bi bi-file-earmark-plus"></i>
+            <i class="bi bi-clipboard2-plus"></i>
             <br>
             <span class="label">Nova Produção</span>
           </a>
@@ -65,13 +73,6 @@
             <i class="bi bi-folder"></i>
             <br>
             <span class="label">Stock de Produtos</span>
-          </a>
-        </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
-          <a class="nav-link" th:href="@{/employees/stock/add}">
-            <i class="bi bi-folder-plus"></i>
-            <br>
-            <span class="label">Adicionar Stock</span>
           </a>
         </div>
         <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
@@ -100,14 +101,15 @@
       <div class="order-table w-90 mt-4 fr-center">
         <table class="table table-striped fr-table">
           <thead>
-          <tr>
-            <th>ID</th>
-            <th>Código</th>
-            <th>Nome do Produto</th>
-            <th>Preço</th>
-            <th>Quantidade em Stock</th>
-            <th>Produto para venda?</th>
-          </tr>
+            <tr>
+              <th>ID</th>
+              <th>Código</th>
+              <th>Nome do Produto</th>
+              <th>Preço</th>
+              <th>Quantidade em Stock</th>
+              <th>Tipo de Produto</th>
+              <th>Produto para venda?</th>
+            </tr>
           </thead>
           <tbody>
             <tr th:each="stockItem : ${stockItems}">
@@ -116,10 +118,11 @@
               <td th:text="${stockItem.getProduct().getProductName()}"></td>
               <td th:text="${stockItem.getProduct().getPrice()}"></td>
               <td th:text="${stockItem.getQuantity()}"></td>
+              <td th:text="${stockItem.getProduct().getProductType()}"></td>
               <td th:text="${stockItem.getForSale() ? 'SIM' : 'NÃO'}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(stockItems)}">
-              <td colspan="9" class="text-center">Nenhum produto em stock...</td>
+              <td colspan="7" class="text-center">Nenhum produto em stock...</td>
             </tr>
           </tbody>
         </table>
