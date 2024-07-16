@@ -82,7 +82,7 @@ public class CompanyController {
         Company company = currentUser.getCompany();
 
 
-        List<Order> orders = companyService.getCompanyDeliveredRejectedReceivedOrders(company.getId());
+        List<Order> orders = companyService.getCompanyCompletedRejectedOrders(company.getId());
 
         model.addAttribute("company",company);
         model.addAttribute("orders",orders);

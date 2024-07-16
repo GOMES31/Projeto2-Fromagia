@@ -1,9 +1,6 @@
 package com.example.fromagiabackend.Service.Stock;
 
-import com.example.fromagiabackend.Entity.Company;
-import com.example.fromagiabackend.Entity.Stock;
-import com.example.fromagiabackend.Entity.StockItem;
-import com.example.fromagiabackend.Entity.Supplier;
+import com.example.fromagiabackend.Entity.*;
 
 import java.util.List;
 
@@ -16,4 +13,6 @@ public interface StockService {
     Stock getCompanyStock(Company company);
 
     Stock getSupplierStock(Supplier supplier);
+
+    Stock getClientStock(Client client);
 }

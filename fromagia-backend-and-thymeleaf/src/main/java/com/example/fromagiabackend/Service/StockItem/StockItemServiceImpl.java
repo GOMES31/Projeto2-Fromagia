@@ -1,5 +1,7 @@
 package com.example.fromagiabackend.Service.StockItem;
 
+import com.example.fromagiabackend.Entity.Product;
+import com.example.fromagiabackend.Entity.Stock;
 import com.example.fromagiabackend.Entity.StockItem;
 import com.example.fromagiabackend.Repository.StockItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +29,15 @@ public class StockItemServiceImpl implements StockItemService{
     @Transactional(readOnly = true)
     public StockItem findById(Integer id) {
         return stockItemRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public StockItem findByProduct(Product product) {
+        return stockItemRepository.findStockItemByProduct(product);
+    }
+
+    @Override
+    public StockItem findByProductAndStock(Product product, Stock stock) {
+        return stockItemRepository.findByProductAndStock(product,stock);
     }
 }

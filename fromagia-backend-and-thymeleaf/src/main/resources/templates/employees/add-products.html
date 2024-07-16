@@ -70,6 +70,13 @@
             <span class="label">Fornecedores</span>
           </a>
         </div>
+        <div class="nav-item">
+          <a class="nav-link" th:href="@{/employees/notifications}">
+            <i class="bi bi-bell"></i>
+            <br>
+            <span class="label">Notificações</span>
+          </a>
+        </div>
       </nav>
     </div>
     <div class="col-md-10 fr-menu-right fr-center">
@@ -85,6 +92,11 @@
             <div class="invalid-feedback" th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}"></div>
           </div>
           <div class="mb-3">
+            <label for="price" class="form-label">Preço do produto:</label>
+            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}" th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+          </div>
+          <div class="mb-3">
             <label for="quantity" class="form-label">Quantidade:</label>
             <input type="number" step="0.01" class="form-control" id="quantity" th:field="*{quantity}" th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid' : ''">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
@@ -93,7 +105,6 @@
             <label for="productType" class="form-label">Tipo de produto</label>
             <select class="form-select" id="productType" th:field="*{productType}">
               <option value="" disabled>Tipo de produto</option>
-              <option value="CHEESE">Queijo</option>
               <option value="RAW_MATERIAL">Matéria-Prima</option>
             </select>
           </div>
