@@ -1,7 +1,6 @@
 package com.example.fromagiabackend.Service.Client;
 
 import com.example.fromagiabackend.Entity.Client;
-import com.example.fromagiabackend.Entity.Company;
 import com.example.fromagiabackend.Entity.Enums.OrderState;
 import com.example.fromagiabackend.Entity.Order;
 import com.example.fromagiabackend.Repository.ClientRepository;
@@ -31,14 +30,29 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getClientAcceptedOrRejectedOrders(Integer id) {
-
+    public List<Order> getClientDeliveredRejectedReceivedOrders(Integer id) {
         Client client = clientRepository.findById(id).orElse(null);
 
         if (Objects.nonNull(client)) {
             Hibernate.initialize(client.getOrders());
             return client.getOrders().stream()
-                    .filter(order -> order.getOrderState() == OrderState.ACCEPTED || order.getOrderState() == OrderState.REJECTED)
+                    .filter(order -> order.getOrderState() == OrderState.DELIVERED || order.getOrderState() == OrderState.REJECTED || order.getOrderState() == OrderState.RECEIVED)
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Order> getClientPendingOrAcceptedOrders(Integer id) {
+        Client client = clientRepository.findById(id).orElse(null);
+
+        if (Objects.nonNull(client)) {
+            Hibernate.initialize(client.getOrders());
+            return client.getOrders().stream()
+                    .filter(order -> order.getOrderState() == OrderState.PENDING || order.getOrderState() == OrderState.ACCEPTED)
                     .collect(Collectors.toList());
         }
 
@@ -46,18 +60,18 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Order> getClientPendingOrders(Integer id) {
+    @Transactional
+    public List<Order> getClientOrders(Integer id) {
 
         Client client = clientRepository.findById(id).orElse(null);
 
         if (Objects.nonNull(client)) {
             Hibernate.initialize(client.getOrders());
-            return client.getOrders().stream()
-                    .filter(order -> order.getOrderState() == OrderState.PENDING)
-                    .collect(Collectors.toList());
+            return client.getOrders();
         }
 
         return Collections.emptyList();
     }
+
+
 }

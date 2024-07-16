@@ -1,7 +1,9 @@
 package com.example.fromagiabackend.Service.Supplier;
 
 import com.example.fromagiabackend.Entity.Company;
+import com.example.fromagiabackend.Entity.Order;
 import com.example.fromagiabackend.Entity.Supplier;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +16,10 @@ public interface SupplierService {
     List<Supplier> findCompanySuppliers(Company company);
 
     List<Supplier> findSuppliersWithoutCompany();
+
+    List<Order> getSupplierOrders(Integer id);
+
+    List<Order> getSupplierDeliveredRejectedReceivedOrders(Integer id);
+
+    List<Order> getSupplierPendingOrAcceptedOrders(Integer id);
 }

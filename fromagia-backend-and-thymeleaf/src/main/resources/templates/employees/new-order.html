@@ -7,7 +7,6 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
   <link th:href="@{/styles/global.css}" rel="stylesheet" />
   <link th:href="@{/styles/employees.css}" rel="stylesheet" />
-
 </head>
 <body>
 <div class="container-fluid d-flex align-items-center justify-content-center">
@@ -41,9 +40,10 @@
             <br>
             <span class="label">Nova Encomenda</span>
           </a>
-        </div><div class="nav-item">
+        </div>
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/orders/pending}">
-            <i class="bi bi-cart-4"></i>
+            <i class="bi bi-cart4"></i>
             <br>
             <span class="label">Encomendas Pendentes</span>
           </a>
@@ -75,42 +75,18 @@
       <a th:href="@{/auth/logout}" class="logout-icon">
         <i class="bi bi-box-arrow-right"></i>
       </a>
+      <h2 class="fr-form-title text-center">Nova Encomenda: Escolher Fornecedor</h2>
       <div class="form-container">
-        <h2 class="fr-form-title text-center">Novo Produto</h2>
-        <form th:action="@{/employees/products/add}" method="post" th:object="${stockItemDTO}">
+        <form th:action="@{/employees/orders/new}" method="post">
           <div class="mb-3">
-            <label for="productName" class="form-label">Nome do produto:</label>
-            <input type="text" class="form-control" id="productName" th:field="*{productName}" th:classappend="${#fields.hasErrors('productName')} ? 'is-invalid' : ''">
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}"></div>
-          </div>
-          <div class="mb-3">
-            <label for="price" class="form-label">Preço do produto:</label>
-            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}" th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''">
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
-          </div>
-          <div class="mb-3">
-            <label for="quantity" class="form-label">Quantidade:</label>
-            <input type="number" step="0.01" class="form-control" id="quantity" th:field="*{quantity}" th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid' : ''">
-            <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
-          </div>
-          <div class="mb-3">
-            <label for="productType" class="form-label">Tipo de produto</label>
-            <select class="form-select" id="productType" th:field="*{productType}">
-              <option value="" disabled>Tipo de produto</option>
-              <option value="CHEESE">Queijo</option>
-              <option value="RAW_MATERIAL">Matéria-Prima</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="forSale" class="form-label">Produto para venda?</label>
-            <select class="form-select" id="forSale" th:field="*{forSale}">
-              <option value="" disabled>Produto para venda?</option>
-              <option value="true">Sim</option>
-              <option value="false">Não</option>
+            <label for="supplierSelect" class="form-label">Selecionar Fornecedor:</label>
+            <select class="form-control" id="supplierSelect" name="supplierId" required>
+              <option value="" disabled>Selecionar fornecedor</option>
+              <option th:each="supplier : ${suppliers}" th:value="${supplier.id}" th:text="${supplier.name}"></option>
             </select>
           </div>
           <div class="text-center">
-            <button type="submit" class="fr-button btn">Adicionar Produto</button>
+            <button type="submit" class="fr-button btn">Escolher Fornecedor</button>
           </div>
         </form>
       </div>

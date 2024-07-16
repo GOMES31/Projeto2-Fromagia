@@ -35,16 +35,16 @@
           <span class="label">Lista Encomendas</span>
         </a>
       </div>
-      <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
-        <a class="nav-link" th:href="@{/employees/orders/new}">
-          <i class="bi bi-cart-plus"></i>
-          <br>
-          <span class="label">Nova Encomenda</span>
-        </a>
-      </div>
+        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+          <a class="nav-link" th:href="@{/employees/orders/new}">
+            <i class="bi bi-cart-plus"></i>
+            <br>
+            <span class="label">Nova Encomenda</span>
+          </a>
+        </div>
       <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
         <a class="nav-link" th:href="@{/employees/orders/pending}">
-          <i class="bi bi-cart-plus"></i>
+          <i class="bi bi-cart4"></i>
           <br>
           <span class="label">Encomendas Pendentes</span>
         </a>

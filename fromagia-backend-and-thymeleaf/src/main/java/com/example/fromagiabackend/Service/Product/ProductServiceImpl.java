@@ -39,4 +39,9 @@ public class ProductServiceImpl implements ProductService{
     public String generateProductCode(Integer id){
         return "PROD" + id;
     }
+
+    @Override
+    public Optional<Product> findById(Integer id) {
+        return productRepository.findById(id);
+    }
 }

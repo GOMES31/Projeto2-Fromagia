@@ -4,9 +4,11 @@ package com.example.fromagiabackend.Controller;
 import com.example.fromagiabackend.Entity.*;
 import com.example.fromagiabackend.Entity.Enums.AccountType;
 import com.example.fromagiabackend.Entity.Enums.CompanyPosition;
+import com.example.fromagiabackend.Entity.Helpers.OrderDTO;
 import com.example.fromagiabackend.Entity.Helpers.StockItemDTO;
 import com.example.fromagiabackend.Entity.Helpers.UpdateStockDTO;
 import com.example.fromagiabackend.Service.Company.CompanyService;
+import com.example.fromagiabackend.Service.Order.OrderService;
 import com.example.fromagiabackend.Service.Product.ProductService;
 import com.example.fromagiabackend.Service.ProductionHistory.ProductionHistoryService;
 import com.example.fromagiabackend.Service.Stock.StockService;
@@ -23,10 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.fromagiabackend.Controller.AppController.getHomeRedirectUrl;
 
@@ -46,19 +46,22 @@ public class EmployeeController {
 
     private final StockItemService stockItemService;
 
+    private final OrderService orderService;
     @Autowired
     public EmployeeController(ProductService _productService,
                               CompanyService _companyService,
                               StockService _stockService,
                               ProductionHistoryService _productionHistoryService,
                               SupplierService _supplierService,
-                              StockItemService _stockItemService){
+                              StockItemService _stockItemService,
+                              OrderService _orderService){
         productService = _productService;
         companyService = _companyService;
         stockService = _stockService;
         productionHistoryService = _productionHistoryService;
         supplierService = _supplierService;
         stockItemService = _stockItemService;
+        orderService = _orderService;
     }
 
     @GetMapping("/home")
@@ -96,7 +99,7 @@ public class EmployeeController {
         Company employeeCompany = currentUser.getEmployee().getCompany();
         Employee employee = currentUser.getEmployee();
 
-        List<Order> orders = companyService.getCompanyAcceptedOrRejectedOrders(employeeCompany.getId());
+        List<Order> orders = companyService.getCompanyDeliveredRejectedReceivedOrders(employeeCompany.getId());
 
         model.addAttribute("employee",employee);
         model.addAttribute("orders",orders);
@@ -104,38 +107,8 @@ public class EmployeeController {
         return "employees/orders";
     }
 
-    // TODO - COMEBACK TO THIS LATER
-    @GetMapping("/orders/new")
-    public String showNewOrderPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
 
-        User currentUser = (User) session.getAttribute("user");
 
-        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
-        if (authenticationResult != null) {
-            return authenticationResult;
-        }
-
-        CompanyPosition positionAllowed = CompanyPosition.MANAGER;
-
-        String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
-        if( employeePermissionsResult != null){
-            return employeePermissionsResult;
-        }
-
-        String suppliersResult = handleSuppliersList(currentUser,redirectAttributes);
-        if(suppliersResult != null){
-            return suppliersResult;
-        }
-
-        if (!model.containsAttribute("stockItemDTO")) {
-            StockItemDTO stockItemDTO = new StockItemDTO();
-            model.addAttribute("stockItemDTO",stockItemDTO);
-        }
-
-        Employee employee = currentUser.getEmployee();
-        model.addAttribute("employee", employee);
-        return "employees/new-order";
-    }
 
     @GetMapping("/stock")
     public String showStockPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
@@ -305,7 +278,7 @@ public class EmployeeController {
 
     }
 
-    // TODO - GET BACK TO THIS LATER
+
     @GetMapping("/suppliers/find")
     public String showSuppliersAvailablePage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
         User currentUser = (User) session.getAttribute("user");
@@ -332,7 +305,7 @@ public class EmployeeController {
 
 
     @GetMapping("/suppliers/stock/{id}")
-    public String showSupplierProducts(Model model, HttpSession session, RedirectAttributes redirectAttributes, @PathVariable Integer id){
+    public String showSuppliersStockItems(Model model, HttpSession session, RedirectAttributes redirectAttributes, @PathVariable Integer id){
         User currentUser = (User) session.getAttribute("user");
 
         String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
@@ -354,11 +327,11 @@ public class EmployeeController {
         }
         else
         {
-            redirectAttributes.addFlashAttribute("error","Forncedor não encontrado!");
+            redirectAttributes.addFlashAttribute("error","Erro inesperado aconteceu!");
             return getHomeRedirectUrl(currentUser);
         }
 
-        List<StockItem> stockItems = stockService.getSupplierStock(supplier).getStockItems();
+        List<StockItem> stockItems = stockService.getSupplierStock(supplier).getStockItems().stream().filter(StockItem::getForSale).collect(Collectors.toList());
 
         Employee employee = currentUser.getEmployee();
 
@@ -367,6 +340,182 @@ public class EmployeeController {
         model.addAttribute("stockItems",stockItems);
         return "employees/suppliers-products";
     }
+
+    // todo under this
+
+    @GetMapping("/orders/new")
+    public String showNewOrderPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        CompanyPosition positionAllowed = CompanyPosition.MANAGER;
+
+        String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
+        if( employeePermissionsResult != null){
+            return employeePermissionsResult;
+        }
+
+        String suppliersResult = handleSuppliersList(currentUser,redirectAttributes);
+        if(suppliersResult != null){
+            return suppliersResult;
+        }
+
+        Employee employee = currentUser.getEmployee();
+
+        Company company = employee.getCompany();
+
+        List<Supplier> suppliers = supplierService.findCompanySuppliers(company);
+
+        model.addAttribute("employee", employee);
+        model.addAttribute("suppliers",suppliers);
+
+
+        return "employees/new-order";
+    }
+
+
+    @PostMapping("/orders/new")
+    public String addSupplierAndRedirectOrdersProductPage(@RequestParam("supplierId") Integer supplierId,Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        CompanyPosition positionAllowed = CompanyPosition.MANAGER;
+        String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
+        if (employeePermissionsResult != null) {
+            return employeePermissionsResult;
+        }
+
+        Optional<Supplier> result = supplierService.findById(supplierId);
+        Supplier supplier;
+        if (result.isPresent()) {
+            supplier = result.get();
+        }
+        else
+        {
+            redirectAttributes.addFlashAttribute("error","Erro inesperado aconteceu!");
+            return getHomeRedirectUrl(currentUser);
+        }
+
+        List<StockItem> stockItems = stockService.getSupplierStock(supplier).getStockItems().stream().filter(StockItem::getForSale).collect(Collectors.toList());
+
+        model.addAttribute("stockItems",stockItems);
+        model.addAttribute("supplierId",supplierId);
+
+        if (!model.containsAttribute("orderDTO")) {
+            OrderDTO orderDTO = new OrderDTO();
+            orderDTO.setSupplierId(supplierId);
+            model.addAttribute("orderDTO",orderDTO);
+        }
+
+        return "employees/new-order-product";
+    }
+
+    @PostMapping("/orders/send")
+    public String sendOrder(@Valid @ModelAttribute("orderDTO")OrderDTO orderDTO, BindingResult bindingResult,HttpSession session,Model model,RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        CompanyPosition positionAllowed = CompanyPosition.MANAGER;
+
+        String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
+        if(employeePermissionsResult != null){
+            return employeePermissionsResult;
+        }
+
+        if (bindingResult.hasErrors()) {
+            Supplier supplier = supplierService.findById(orderDTO.getSupplierId()).orElse(null);
+
+            if (supplier != null) {
+                List<StockItem> stockItems = stockService.getSupplierStock(supplier)
+                        .getStockItems()
+                        .stream()
+                        .filter(StockItem::getForSale)
+                        .collect(Collectors.toList());
+                model.addAttribute("stockItems", stockItems);
+            }
+            model.addAttribute("supplier",supplier);
+            model.addAttribute("orderDTO", orderDTO);
+            return "employees/new-order-product";
+        }
+
+        Order order = new Order();
+        OrderItem orderItem = new OrderItem();
+        Company company = currentUser.getEmployee().getCompany();
+
+        String orderCode = orderService.generateOrderCode();
+
+        StockItem stockItem = stockItemService.findById(orderDTO.getStockItemId());
+        orderItem.setProduct(stockItem.getProduct());
+        orderItem.setQuantity(orderDTO.getQuantity());
+
+        order.addOrderItem(orderItem);
+        order.setCompany(company);
+
+
+        Supplier supplier = supplierService.findById(orderDTO.getSupplierId()).orElse(null);
+
+        order.setSupplier(supplier);
+        order.setSentDate(LocalDateTime.now());
+        order.setOrderCode(orderCode);
+
+        BigDecimal price = stockItem.getProduct().getPrice();
+        BigDecimal quantity = orderDTO.getQuantity();
+        BigDecimal totalAmount = price.multiply(quantity);
+
+
+        order.setTotalAmount(totalAmount);
+
+        List<Order> companyOrders = companyService.getCompanyOrders(company.getId());
+        companyOrders.add(order);
+
+        List<Order> supplierOrders = supplierService.getSupplierOrders(supplier.getId());
+        supplierOrders.add(order);
+
+        orderService.save(order);
+
+        return "redirect:/employees/orders/pending";
+    }
+
+    @GetMapping("/orders/pending")
+    public String showPendingOrdersPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        CompanyPosition positionAllowed = CompanyPosition.MANAGER;
+
+        String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
+        if(employeePermissionsResult != null){
+            return employeePermissionsResult;
+        }
+
+        Company employeeCompany = currentUser.getEmployee().getCompany();
+        Employee employee = currentUser.getEmployee();
+
+        List<Order> orders = companyService.getCompanyPendingOrAcceptedOrders(employeeCompany.getId());
+
+        model.addAttribute("employee",employee);
+        model.addAttribute("orders",orders);
+
+        return "employees/pending-orders";
+    }
+
     @GetMapping("/production/new")
     public String showNewProductionPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
 
@@ -385,7 +534,6 @@ public class EmployeeController {
         }
 
         if (!model.containsAttribute("updateStockDTO")) {
-
             UpdateStockDTO updateStockDTO = new UpdateStockDTO();
             model.addAttribute("updateStockDTO",updateStockDTO);
         }
@@ -401,7 +549,7 @@ public class EmployeeController {
 
 
     @PostMapping("/suppliers/add/{id}")
-    public String addSupplierToList(BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes, @PathVariable Integer id){
+    public String addSupplierToList(HttpSession session, RedirectAttributes redirectAttributes, @PathVariable Integer id){
         User currentUser = (User) session.getAttribute("user");
 
         String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
@@ -409,7 +557,7 @@ public class EmployeeController {
             return authenticationResult;
         }
 
-        CompanyPosition positionAllowed = CompanyPosition.PRODUCER;
+        CompanyPosition positionAllowed = CompanyPosition.MANAGER;
 
         String employeePermissionsResult = handleEmployeePermissions(currentUser, redirectAttributes, positionAllowed);
         if(employeePermissionsResult != null){
@@ -423,14 +571,14 @@ public class EmployeeController {
         }
         else
         {
-            redirectAttributes.addFlashAttribute("error","Forncedor não encontrado!");
+            redirectAttributes.addFlashAttribute("error","Erro inesperado aconteceu!");
             return getHomeRedirectUrl(currentUser);
         }
 
         Company company = currentUser.getEmployee().getCompany();
-        company.getSuppliers().add(supplier);
+        supplier.setCompany(company);
 
-        companyService.save(company);
+        supplierService.save(supplier);
 
         redirectAttributes.addFlashAttribute("message", "Fornecedor contratado com sucesso!");
         return "redirect:/employees/suppliers";

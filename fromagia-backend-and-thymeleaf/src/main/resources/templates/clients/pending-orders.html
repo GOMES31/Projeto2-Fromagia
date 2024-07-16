@@ -56,7 +56,7 @@
         <i class="bi bi-box-arrow-right"></i>
       </a>
       <div class="w-75 fr-center">
-        <p class="fr-table-title text-center">Histórico de Encomendas</p>
+        <p class="fr-table-title text-center">Encomendas Pendentes</p>
       </div>
       <div class="order-table w-90 mt-4 fr-center">
         <table class="table table-striped fr-table">
@@ -72,22 +72,22 @@
           </tr>
           </thead>
           <tbody>
-            <tr th:each="order : ${orders}">
-              <td th:text="${order.getId()}"></td>
-              <td th:text="${order.getOrderCode()}"></td>
-              <td th:text="${order.getReceivedDate()}"></td>
-              <td th:text="${order.getSentDate()}"></td>
-              <td th:text="${order.getOrderState()}"></td>
-              <td th:text="${order.getTotalAmount()}"></td>
-              <td>
-                <a th:if="${order.getOrderState().toString() == 'RECEIVED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
-                  <i class="bi bi-receipt"></i>
-                </a>
-              </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(orders)}">
-              <td colspan="7" class="text-center">Nenhuma encomenda encontrada...</td>
-            </tr>
+          <tr th:each="order : ${orders}">
+            <td th:text="${order.getId()}"></td>
+            <td th:text="${order.getOrderCode()}"></td>
+            <td th:text="${order.getReceivedDate()}"></td>
+            <td th:text="${order.getSentDate()}"></td>
+            <td th:text="${order.getOrderState()}"></td>
+            <td th:text="${order.getTotalAmount()}"></td>
+            <td>
+              <a th:if="${order.getOrderState().toString() == 'ACCEPTED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
+                <i class="bi bi-receipt fr-info"></i>
+              </a>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(orders)}">
+            <td colspan="7" class="text-center">Nenhuma encomenda encontrada...</td>
+          </tr>
           </tbody>
         </table>
       </div>

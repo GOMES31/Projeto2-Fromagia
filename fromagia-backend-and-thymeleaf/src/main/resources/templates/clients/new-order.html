@@ -2,12 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Encomendas</title>
+  <title>Nova Encomenda</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
   <link th:href="@{/styles/global.css}" rel="stylesheet" />
-  <link th:href="@{/styles/clients.css}" rel="stylesheet" />
-
+  <link th:href="@{/styles/employees.css}" rel="stylesheet" />
 </head>
 <body>
 <div class="container-fluid d-flex align-items-center justify-content-center">
@@ -55,41 +54,20 @@
       <a th:href="@{/auth/logout}" class="logout-icon">
         <i class="bi bi-box-arrow-right"></i>
       </a>
-      <div class="w-75 fr-center">
-        <p class="fr-table-title text-center">Histórico de Encomendas</p>
-      </div>
-      <div class="order-table w-90 mt-4 fr-center">
-        <table class="table table-striped fr-table">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Código</th>
-            <th>Data Receção</th>
-            <th>Data Envio</th>
-            <th>Estado</th>
-            <th>Total</th>
-            <th>Fatura</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr th:each="order : ${orders}">
-              <td th:text="${order.getId()}"></td>
-              <td th:text="${order.getOrderCode()}"></td>
-              <td th:text="${order.getReceivedDate()}"></td>
-              <td th:text="${order.getSentDate()}"></td>
-              <td th:text="${order.getOrderState()}"></td>
-              <td th:text="${order.getTotalAmount()}"></td>
-              <td>
-                <a th:if="${order.getOrderState().toString() == 'RECEIVED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
-                  <i class="bi bi-receipt"></i>
-                </a>
-              </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(orders)}">
-              <td colspan="7" class="text-center">Nenhuma encomenda encontrada...</td>
-            </tr>
-          </tbody>
-        </table>
+      <h2 class="fr-form-title text-center">Nova Encomenda: Escolher Empresa</h2>
+      <div class="form-container">
+        <form th:action="@{/clients/orders/new}" method="post">
+          <div class="mb-3">
+            <label for="companySelect" class="form-label">Selecionar Empresa:</label>
+            <select class="form-control" id="companySelect" name="companyId" required>
+              <option value="" disabled>Selecionar empresa</option>
+              <option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.name}"></option>
+            </select>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="fr-button btn">Escolher Empresa</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

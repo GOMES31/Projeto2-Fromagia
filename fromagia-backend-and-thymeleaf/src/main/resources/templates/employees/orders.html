@@ -45,7 +45,7 @@
         </div>
         <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
           <a class="nav-link" th:href="@{/employees/orders/pending}">
-            <i class="bi bi-cart-plus"></i>
+            <i class="bi bi-cart4"></i>
             <br>
             <span class="label">Encomendas Pendentes</span>
           </a>
@@ -116,7 +116,7 @@
               <td th:text="${order.getOrderState()}"></td>
               <td th:text="${order.getTotalAmount()}"></td>
               <td>
-                <a th:if="${order.getOrderState().toString() == 'ACCEPTED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
+                <a th:if="${order.getOrderState().toString() == 'RECEIVED' || order.getOrderState().toString() == 'DELIVERED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
                   <i class="bi bi-receipt"></i>
                 </a>
               </td>

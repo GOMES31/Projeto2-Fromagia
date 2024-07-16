@@ -44,7 +44,7 @@
         </div>
         <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
           <a class="nav-link" th:href="@{/employees/orders/pending}">
-            <i class="bi bi-cart-plus"></i>
+            <i class="bi bi-cart4"></i>
             <br>
             <span class="label">Encomendas Pendentes</span>
           </a>
@@ -91,7 +91,7 @@
         <i class="bi bi-box-arrow-right"></i>
       </a>
       <div class="w-75 fr-center">
-        <p class="fr-table-title text-center">Lista de Fornecedores</p>
+        <p class="fr-table-title text-center">Procurar Fornecedores</p>
       </div>
       <div class="order-table w-90 mt-4 fr-center">
         <table class="table table-striped fr-table">
@@ -108,7 +108,7 @@
               <td th:text="${supplier.getName()}"></td>
               <td>
                 <a th:href="@{/employees/suppliers/stock/{id}(id=${supplier.getId()})}">
-                  <i class="bi bi-info-square"></i>
+                  <i class="bi bi-info-square fr-info"></i>
                 </a>
               </td>
             </tr>

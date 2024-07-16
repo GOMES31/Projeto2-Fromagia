@@ -57,4 +57,9 @@ public class Client {
         this.stock = new Stock();
         this.stock.setClient(this);
     }
+
+    public void addOrder(Order order){
+        this.orders.add(order);
+        order.setClient(this);
+    }
 }

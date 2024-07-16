@@ -6,6 +6,7 @@
     --table-background: #C0FFD4;
 }
 
+
 .form-container{
     max-width: 50%;
     width: 100%;
@@ -176,6 +177,8 @@
 
 .fr-btn-label{
     margin-left: 0.5rem;
+    color: white;
+    font-weight: 500;
 }
 
 
