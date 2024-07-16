@@ -13,7 +13,7 @@ public interface CompanyService {
 
     Optional<Company> findById(Integer id);
 
-    List<Order> getCompanyDeliveredRejectedReceivedOrders(Integer id);
+    List<Order> getCompanyCompletedRejectedOrders(Integer id);
 
     List<Order> getCompanyPendingOrAcceptedOrders(Integer id);
 

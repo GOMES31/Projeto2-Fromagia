@@ -8,6 +8,7 @@ import com.example.fromagiabackend.Entity.Helpers.OrderDTO;
 import com.example.fromagiabackend.Entity.Helpers.StockItemDTO;
 import com.example.fromagiabackend.Entity.Helpers.UpdateStockDTO;
 import com.example.fromagiabackend.Service.Company.CompanyService;
+import com.example.fromagiabackend.Service.Notification.NotificationService;
 import com.example.fromagiabackend.Service.Order.OrderService;
 import com.example.fromagiabackend.Service.Product.ProductService;
 import com.example.fromagiabackend.Service.ProductionHistory.ProductionHistoryService;
@@ -47,6 +48,8 @@ public class EmployeeController {
     private final StockItemService stockItemService;
 
     private final OrderService orderService;
+
+    private final NotificationService notificationService;
     @Autowired
     public EmployeeController(ProductService _productService,
                               CompanyService _companyService,
@@ -54,7 +57,8 @@ public class EmployeeController {
                               ProductionHistoryService _productionHistoryService,
                               SupplierService _supplierService,
                               StockItemService _stockItemService,
-                              OrderService _orderService){
+                              OrderService _orderService,
+                              NotificationService _notificationService){
         productService = _productService;
         companyService = _companyService;
         stockService = _stockService;
@@ -62,6 +66,7 @@ public class EmployeeController {
         supplierService = _supplierService;
         stockItemService = _stockItemService;
         orderService = _orderService;
+        notificationService = _notificationService;
     }
 
     @GetMapping("/home")
@@ -99,7 +104,7 @@ public class EmployeeController {
         Company employeeCompany = currentUser.getEmployee().getCompany();
         Employee employee = currentUser.getEmployee();
 
-        List<Order> orders = companyService.getCompanyDeliveredRejectedReceivedOrders(employeeCompany.getId());
+        List<Order> orders = companyService.getCompanyCompletedRejectedOrders(employeeCompany.getId());
 
         model.addAttribute("employee",employee);
         model.addAttribute("orders",orders);
@@ -133,6 +138,60 @@ public class EmployeeController {
         model.addAttribute("stockItems", stockItems);
 
         return "employees/stock";
+    }
+
+    @GetMapping("/notifications")
+    public String getNotificationsPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if(authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        List<Notification> notifications = notificationService.findAll();
+
+        model.addAttribute("notifications",notifications);
+
+        return "employees/notifications";
+    }
+
+    @GetMapping("/notifications/new")
+    public String getNewNotificationPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if(authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        List<Notification> notifications = notificationService.findAll();
+
+        model.addAttribute("notifications",notifications);
+
+        return "employees/notifications";
+    }
+
+    @PostMapping("/notifications/send")
+    public String sendNotification(@RequestParam("message") String message,HttpSession session,RedirectAttributes redirectAttributes) {
+
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if(authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        String createdBy = currentUser.getUsername();
+
+        message += "\n\n\n\nMensagem enviada por: " + currentUser.getEmployee().getName() +
+                    "\nCargo: " + currentUser.getEmployee().getCompanyPosition();
+
+        notificationService.createNotification(message, createdBy);
+
+        redirectAttributes.addFlashAttribute("message", "Notificação enviada com sucesso!");
+
+        return "redirect:/employees/notifications";
     }
 
     @GetMapping("/production-history")

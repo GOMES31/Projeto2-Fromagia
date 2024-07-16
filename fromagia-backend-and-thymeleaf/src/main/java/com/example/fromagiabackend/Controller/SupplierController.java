@@ -2,7 +2,6 @@ package com.example.fromagiabackend.Controller;
 
 import com.example.fromagiabackend.Entity.*;
 import com.example.fromagiabackend.Entity.Enums.AccountType;
-import com.example.fromagiabackend.Entity.Enums.CompanyPosition;
 import com.example.fromagiabackend.Entity.Helpers.StockItemDTO;
 import com.example.fromagiabackend.Entity.Helpers.UpdateStockDTO;
 import com.example.fromagiabackend.Service.Product.ProductService;
@@ -23,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.example.fromagiabackend.Controller.AppController.getHomeRedirectUrl;
 
@@ -227,7 +225,7 @@ public class SupplierController {
 
         Supplier supplier = currentUser.getSupplier();
 
-        List<Order> orders = supplierService.getSupplierDeliveredRejectedReceivedOrders(supplier.getId());
+        List<Order> orders = supplierService.getSupplierCompletedRejectedOrders(supplier.getId());
 
         model.addAttribute("orders",orders);
 

@@ -59,14 +59,14 @@ public class SupplierServiceImpl implements SupplierService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getSupplierDeliveredRejectedReceivedOrders(Integer id) {
+    public List<Order> getSupplierCompletedRejectedOrders(Integer id) {
 
         Supplier supplier = supplierRepository.findById(id).orElse(null);
 
         if (Objects.nonNull(supplier)) {
             Hibernate.initialize(supplier.getOrders());
             return supplier.getOrders().stream()
-                    .filter(order -> order.getOrderState() == OrderState.DELIVERED || order.getOrderState() == OrderState.REJECTED || order.getOrderState() == OrderState.RECEIVED)
+                    .filter(order -> order.getOrderState() == OrderState.COMPLETED || order.getOrderState() == OrderState.REJECTED)
                     .collect(Collectors.toList());
         }
 

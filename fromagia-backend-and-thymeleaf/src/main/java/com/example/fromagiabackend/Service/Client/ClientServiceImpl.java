@@ -30,13 +30,13 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getClientDeliveredRejectedReceivedOrders(Integer id) {
+    public List<Order> getClientCompletedRejectedOrders(Integer id) {
         Client client = clientRepository.findById(id).orElse(null);
 
         if (Objects.nonNull(client)) {
             Hibernate.initialize(client.getOrders());
             return client.getOrders().stream()
-                    .filter(order -> order.getOrderState() == OrderState.DELIVERED || order.getOrderState() == OrderState.REJECTED || order.getOrderState() == OrderState.RECEIVED)
+                    .filter(order -> order.getOrderState() == OrderState.COMPLETED || order.getOrderState() == OrderState.REJECTED)
                     .collect(Collectors.toList());
         }
 

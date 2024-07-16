@@ -194,3 +194,21 @@
 .logout-icon:hover{
     color: var(--fromagia-secondary);
 }
+
+.fr-notifications {
+    margin-top: 2rem;
+}
+.notification-item {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.notification-item p {
+    margin: 0;
+}
+.notification-item small {
+    display: block;
+    color: #6c757d;
+}

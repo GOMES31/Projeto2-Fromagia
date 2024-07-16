@@ -105,7 +105,9 @@
                   <button type="submit" class="btn btn-danger">Rejeitar</button>
                 </form>
               </div>
-              <a th:if="${order.getOrderState().toString() == 'ACCEPTED'}" th:href="@{/orders/send/{id}(id=${order.getId()})}" class="btn btn-primary">Enviar Encomenda</a>
+              <div class="fr-center" th:if="${order.orderState.toString() == 'ACCEPTED'}">
+                <a th:href="@{/orders/send/{id}(id=${order.getId()})}" class="btn btn-primary">Enviar Encomenda</a>
+              </div>
             </td>
           </tr>
           <tr th:if="${#lists.isEmpty(orders)}">

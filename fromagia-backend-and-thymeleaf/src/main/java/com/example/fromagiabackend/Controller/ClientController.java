@@ -2,16 +2,12 @@ package com.example.fromagiabackend.Controller;
 
 import com.example.fromagiabackend.Entity.*;
 import com.example.fromagiabackend.Entity.Enums.AccountType;
-import com.example.fromagiabackend.Entity.Enums.CompanyPosition;
 import com.example.fromagiabackend.Entity.Helpers.OrderDTO;
 import com.example.fromagiabackend.Service.Client.ClientService;
 import com.example.fromagiabackend.Service.Company.CompanyService;
 import com.example.fromagiabackend.Service.Order.OrderService;
-import com.example.fromagiabackend.Service.Product.ProductService;
-import com.example.fromagiabackend.Service.ProductionHistory.ProductionHistoryService;
 import com.example.fromagiabackend.Service.Stock.StockService;
 import com.example.fromagiabackend.Service.StockItem.StockItemService;
-import com.example.fromagiabackend.Service.Supplier.SupplierService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +100,7 @@ public class ClientController {
         }
 
         Client client = currentUser.getClient();
-        List<Order> orders = clientService.getClientDeliveredRejectedReceivedOrders(client.getId());
+        List<Order> orders = clientService.getClientCompletedRejectedOrders(client.getId());
 
         model.addAttribute("client",client);
         model.addAttribute("orders",orders);

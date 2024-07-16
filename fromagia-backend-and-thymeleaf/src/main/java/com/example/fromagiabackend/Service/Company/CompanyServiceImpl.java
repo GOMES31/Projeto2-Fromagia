@@ -35,13 +35,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getCompanyDeliveredRejectedReceivedOrders(Integer id) {
+    public List<Order> getCompanyCompletedRejectedOrders(Integer id) {
         Company company = companyRepository.findById(id).orElse(null);
 
         if (Objects.nonNull(company)) {
             Hibernate.initialize(company.getOrders());
             return company.getOrders().stream()
-                    .filter(order -> order.getOrderState() == OrderState.DELIVERED || order.getOrderState() == OrderState.REJECTED || order.getOrderState() == OrderState.RECEIVED)
+                    .filter(order -> order.getOrderState() == OrderState.COMPLETED || order.getOrderState() == OrderState.REJECTED )
                     .collect(Collectors.toList());
         }
 

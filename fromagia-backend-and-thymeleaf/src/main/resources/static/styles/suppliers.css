@@ -146,9 +146,6 @@
     padding: 0.5rem;
 }
 
-.table th, .table td{
-    vertical-align: middle;
-}
 
 .fr-table-button{
     background-color: var(--fromagia-primary);

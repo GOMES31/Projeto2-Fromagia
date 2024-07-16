@@ -88,6 +88,13 @@
             <span class="label">Fornecedores</span>
           </a>
         </div>
+        <div class="nav-item">
+          <a class="nav-link" th:href="@{/employees/notifications}">
+            <i class="bi bi-bell"></i>
+            <br>
+            <span class="label">Notificações</span>
+          </a>
+        </div>
       </nav>
     </div>
     <div class="col-md-10 fr-menu-right fr-center">
@@ -108,6 +115,7 @@
             <th>Estado</th>
             <th>Total</th>
             <th>Fatura</th>
+            <th>Ações</th>
           </tr>
           </thead>
           <tbody>
@@ -122,6 +130,19 @@
                 <a th:if="${order.getOrderState().toString() == 'ACCEPTED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
                   <i class="bi bi-receipt fr-info"></i>
                 </a>
+              </td>
+              <td>
+                <div class="fr-center" th:if="${order.getOrderState().toString() == 'PENDING' && order.getSupplier() == null}">
+                  <form th:action="@{/orders/accept/{id}(id=${order.getId()})}" method="post">
+                    <button type="submit" class="btn btn-success">Aceitar</button>
+                  </form>
+                  <form th:action="@{/orders/reject/{id}(id=${order.getId()})}" method="post">
+                    <button type="submit" class="btn btn-danger">Rejeitar</button>
+                  </form>
+                </div>
+                <div class="fr-center" th:if="${order.orderState.toString() == 'ACCEPTED' && order.getSupplier() == null}">
+                  <a th:href="@{/orders/send/{id}(id=${order.getId()})}" class="btn btn-primary">Enviar Encomenda</a>
+                </div>
               </td>
             </tr>
             <tr th:if="${#lists.isEmpty(orders)}">
