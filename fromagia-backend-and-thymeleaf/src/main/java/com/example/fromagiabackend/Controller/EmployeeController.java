@@ -152,6 +152,7 @@ public class EmployeeController {
         List<Notification> notifications = notificationService.findAll();
 
         model.addAttribute("notifications",notifications);
+        model.addAttribute("employee",currentUser.getEmployee());
 
         return "employees/notifications";
     }
@@ -168,6 +169,7 @@ public class EmployeeController {
         List<Notification> notifications = notificationService.findAll();
 
         model.addAttribute("notifications",notifications);
+        model.addAttribute("employee",currentUser.getEmployee());
 
         return "employees/notifications";
     }
@@ -390,7 +392,13 @@ public class EmployeeController {
             return getHomeRedirectUrl(currentUser);
         }
 
-        List<StockItem> stockItems = stockService.getSupplierStock(supplier).getStockItems().stream().filter(StockItem::getForSale).collect(Collectors.toList());
+        Stock stock = stockService.getSupplierStock(supplier);
+
+        if(Objects.isNull(stock)){
+            redirectAttributes.addFlashAttribute("error","Erro inesperado aconteceu!");
+            return getHomeRedirectUrl(currentUser);
+        }
+        List<StockItem> stockItems = stock.getStockItems().stream().filter(StockItem::getForSale).collect(Collectors.toList());
 
         Employee employee = currentUser.getEmployee();
 
@@ -400,7 +408,6 @@ public class EmployeeController {
         return "employees/suppliers-products";
     }
 
-    // todo under this
 
     @GetMapping("/orders/new")
     public String showNewOrderPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){

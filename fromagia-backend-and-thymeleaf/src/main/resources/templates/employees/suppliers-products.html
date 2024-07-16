@@ -126,8 +126,6 @@
           <tr th:if="${#lists.isEmpty(stockItems)}">
             <td colspan="7" class="text-center">Nenhum produto em stock...</td>
           </tr>
-          </tbody>
-          <tfoot>
           <tr>
             <td colspan="7" class="text-center">
               <form class="fr-center" th:action="@{/employees/suppliers/add/{id}(id=${supplier.getId()})}" method="post">
@@ -136,6 +134,8 @@
                 </button>
               </form>
           </tr>
+          </tbody>
+          <tfoot>
           <tr>
             <td colspan="1">
               <a th:href="@{/employees/suppliers/find}" class="btn btn-dark">

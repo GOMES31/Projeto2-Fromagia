@@ -54,4 +54,10 @@ public class OrderServiceImpl implements OrderService{
         order.setOrderState(OrderState.ACCEPTED);
         orderRepository.save(order);
     }
+
+    @Override
+    public void updateOrderStateAndSaveOrder(Order order) {
+        order.setOrderState(OrderState.COMPLETED);
+        orderRepository.save(order);
+    }
 }

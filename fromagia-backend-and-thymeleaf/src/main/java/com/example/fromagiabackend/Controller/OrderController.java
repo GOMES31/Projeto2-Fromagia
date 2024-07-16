@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -177,8 +178,7 @@ public class OrderController {
         Optional<Order> result = orderService.findById(id);
         Order order = result.get();
 
-        order.setOrderState(OrderState.COMPLETED);
-        orderService.save(order);
+        orderService.updateOrderStateAndSaveOrder(order);
 
         Invoice invoice = new Invoice();
 
@@ -205,6 +205,8 @@ public class OrderController {
             }
         }
 
+
+
         invoice.setOrder(order);
         invoice.setCompany(order.getCompany());
 
@@ -221,11 +223,74 @@ public class OrderController {
 
         if(Objects.equals(AccountType.EMPLOYEE,currentUser.getAccountType())){
             invoice.setClient(order.getClient());
+            Stock clientStock = stockService.getClientStock(order.getClient());
+
+            List<StockItem> stockItems = clientStock.getStockItems();
+            StockItem existingStockItem = null;
+
+            for (StockItem item : stockItems) {
+                if (item.getProduct().equals(product)) {
+                    existingStockItem = item;
+                    break;
+                }
+            }
+
+            if (existingStockItem == null) {
+                StockItem newItem = new StockItem();
+                newItem.setQuantity(orderItem.getQuantity());
+                newItem.setStock(clientStock);
+                newItem.setProduct(product);
+                newItem.setForSale(true);
+                stockItemService.save(newItem);
+            } else {
+                existingStockItem.setQuantity(existingStockItem.getQuantity().add(orderItem.getQuantity()));
+                stockItemService.save(existingStockItem);
+            }
+
+            StockItem companyStockItem = stockItemService.findByProductAndStock(product,order.getCompany().getStock());
+
+            BigDecimal newQuantity = companyStockItem.getQuantity().subtract(orderItem.getQuantity());
+
+            companyStockItem.setQuantity(newQuantity);
+            stockItemService.save(companyStockItem);
+
             redirectUrl = "redirect:/employees/orders";
         }
 
         if(Objects.equals(AccountType.SUPPLIER,currentUser.getAccountType())){
             invoice.setSupplier(order.getSupplier());
+            Stock companyStock = stockService.getCompanyStock(order.getCompany());
+
+            List<StockItem> stockItems = companyStock.getStockItems();
+            StockItem existingStockItem = null;
+
+            for (StockItem item : stockItems) {
+                if (item.getProduct().equals(product)) {
+                    existingStockItem = item;
+                    break;
+                }
+            }
+
+            if (existingStockItem == null) {
+                StockItem newItem = new StockItem();
+                newItem.setQuantity(orderItem.getQuantity());
+                newItem.setStock(companyStock);
+                newItem.setProduct(product);
+                newItem.setForSale(true);
+                stockItemService.save(newItem);
+            } else {
+                existingStockItem.setQuantity(existingStockItem.getQuantity().add(orderItem.getQuantity()));
+                stockItemService.save(existingStockItem);
+            }
+
+
+            StockItem supplierStockItem = stockItemService.findByProductAndStock(product,order.getSupplier().getStock());
+
+            BigDecimal newQuantity = supplierStockItem.getQuantity().subtract(orderItem.getQuantity());
+
+            supplierStockItem.setQuantity(newQuantity);
+            stockItemService.save(supplierStockItem);
+
             redirectUrl = "redirect:/suppliers/orders";
         }
 

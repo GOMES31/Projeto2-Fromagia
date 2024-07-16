@@ -17,4 +17,6 @@ public interface OrderService {
     void rejectOrder(Order order);
 
     void acceptOrder(Order order);
+
+    void updateOrderStateAndSaveOrder(Order order);
 }

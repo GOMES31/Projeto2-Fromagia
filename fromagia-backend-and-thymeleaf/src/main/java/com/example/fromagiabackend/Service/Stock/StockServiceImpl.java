@@ -1,9 +1,6 @@
 package com.example.fromagiabackend.Service.Stock;
 
-import com.example.fromagiabackend.Entity.Company;
-import com.example.fromagiabackend.Entity.Stock;
-import com.example.fromagiabackend.Entity.StockItem;
-import com.example.fromagiabackend.Entity.Supplier;
+import com.example.fromagiabackend.Entity.*;
 import com.example.fromagiabackend.Repository.StockRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +50,11 @@ public class StockServiceImpl implements StockService {
     @Override
     public Stock getSupplierStock(Supplier supplier){
         return stockRepository.findStockBySupplier(supplier);
+    }
+
+    @Override
+    public Stock getClientStock(Client client) {
+        return stockRepository.findStockByClient(client);
     }
 
     public List<StockItem> getSupplierStockItemsForSale(Supplier supplier) {

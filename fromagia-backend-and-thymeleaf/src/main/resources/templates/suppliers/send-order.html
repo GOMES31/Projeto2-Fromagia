@@ -63,14 +63,69 @@
         <i class="bi bi-box-arrow-right"></i>
       </a>
       <div class="form-container">
-        <h2 class="fr-form-title text-center">SEND ORDER</h2>
-        <form th:action="@{/suppliers/products/add}" method="post" th:object="${stockItemDTO}">
+        <h2 class="fr-form-title text-center">Enviar Encomenda</h2>
+        <div class="invoice-container">
+          <div class="invoice-header">
+            <h3>Detalhes Encomenda</h3>
+          </div>
+
+          <div class="invoice-body">
+            <div>
+              <strong>Detalhes Vendedor:</strong>
+              <ul class="detail-list">
+                <li>
+                  <span th:text="${order.getSupplier().getName()}"></span>
+                </li>
+                <li>
+                  <span th:text="${order.getSupplier().getEmail()}"></span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <strong>Detalhes Comprador:</strong>
+              <ul class="detail-list">
+                <li>
+                  <span th:text="${order.getCompany().getName()}"></span>
+                </li>
+                <li>
+                  <span th:text="${order.getCompany().getEmail()}"></span>
+                </li>
+              </ul>
+            </div>
+
+            <h2>Produtos:</h2>
+            <div class="invoice-item-labels">
+              <span class="invoice-label">Código</span>
+              <span class="invoice-label">Nome</span>
+              <span class="invoice-label">P. Unit.</span>
+              <span class="invoice-label">Qtd.</span>
+            </div>
+            <div th:each="orderItem : ${order.getOrderItems()}">
+              <div class="invoice-item">
+                <span th:text="${orderItem.getProduct().getProductCode()}"></span>
+                <span th:text="${orderItem.getProduct().getProductName()}"></span>
+                <span th:text="${orderItem.getProduct().getPrice()} + '€'"></span>
+                <span th:text="${orderItem.getQuantity()}"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="invoice-footer">
+            <div class="invoice-total">
+              <span th:text="${order.getTotalAmount()} + '€'"></span>
+            </div>
+          </div>
+        </div>
+
+        <form th:action="@{/orders/send/{id}(id=${order.getId()})}" method="post" th:object="${order}">
           <div class="text-center">
-            <button type="submit" class="fr-button btn">Adicionar Produto</button>
+            <button type="submit" class="fr-button btn">Enviar Encomenda</button>
           </div>
         </form>
       </div>
     </div>
+  </div>
+</div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
