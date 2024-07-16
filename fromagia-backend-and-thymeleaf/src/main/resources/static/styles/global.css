@@ -8,6 +8,11 @@
     --table-background: #FAEDCD;
 }
 
+.fr-info{
+    color: black;
+    font-size: 2rem;
+}
+
 html, body {
     margin: 0;
     padding: 0;

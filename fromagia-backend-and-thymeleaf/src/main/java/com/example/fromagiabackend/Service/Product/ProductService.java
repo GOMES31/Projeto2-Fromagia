@@ -12,4 +12,6 @@ public interface ProductService {
     void save(Product product);
 
     String generateProductCode(Integer id);
+
+    Optional<Product> findById(Integer id);
 }

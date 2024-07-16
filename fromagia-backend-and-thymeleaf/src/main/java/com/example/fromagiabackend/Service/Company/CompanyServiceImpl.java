@@ -35,14 +35,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getCompanyAcceptedOrRejectedOrders(Integer id) {
-
+    public List<Order> getCompanyDeliveredRejectedReceivedOrders(Integer id) {
         Company company = companyRepository.findById(id).orElse(null);
 
         if (Objects.nonNull(company)) {
             Hibernate.initialize(company.getOrders());
             return company.getOrders().stream()
-                    .filter(order -> order.getOrderState() == OrderState.ACCEPTED || order.getOrderState() == OrderState.REJECTED)
+                    .filter(order -> order.getOrderState() == OrderState.DELIVERED || order.getOrderState() == OrderState.REJECTED || order.getOrderState() == OrderState.RECEIVED)
                     .collect(Collectors.toList());
         }
 
@@ -51,17 +50,37 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Order> getCompanyPendingOrders(Integer id) {
+    public List<Order> getCompanyPendingOrAcceptedOrders(Integer id) {
 
         Company company = companyRepository.findById(id).orElse(null);
 
         if (Objects.nonNull(company)) {
             Hibernate.initialize(company.getOrders());
             return company.getOrders().stream()
-                    .filter(order -> order.getOrderState() == OrderState.PENDING)
+                    .filter(order -> order.getOrderState() == OrderState.PENDING || order.getOrderState() == OrderState.ACCEPTED)
                     .collect(Collectors.toList());
         }
 
         return Collections.emptyList();
     }
+
+    @Override
+    @Transactional
+    public List<Order> getCompanyOrders(Integer id) {
+
+        Company company = companyRepository.findById(id).orElse(null);
+
+        if (Objects.nonNull(company)) {
+            Hibernate.initialize(company.getOrders());
+            return company.getOrders();
+        }
+
+        return Collections.emptyList();
+    }
+    @Override
+    public List<Company> findAllCompanies() {
+        return companyRepository.findAll();
+    }
+
+
 }

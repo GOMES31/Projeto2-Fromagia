@@ -46,7 +46,7 @@ public class Supplier {
     @OneToOne(mappedBy = "supplier", cascade = CascadeType.ALL)
     private Stock stock;
 
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
     public Supplier(){
@@ -59,6 +59,10 @@ public class Supplier {
         this.nif = nif;
         this.stock = new Stock();
         this.stock.setSupplier(this);
+    }
+
+    public void addOrder(Order order){
+        this.orders.add(order);
     }
 
 }

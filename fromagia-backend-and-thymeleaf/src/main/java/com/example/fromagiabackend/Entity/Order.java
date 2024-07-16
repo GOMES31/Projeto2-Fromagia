@@ -54,9 +54,9 @@ public class Order {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
-    public void calculateTotalAmount() {
-        this.totalAmount = orderItems.stream()
-                .map(item -> item.getProduct().getPrice().multiply(item.getQuantity()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    public void addOrderItem(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
+        orderItem.setOrder(this);
     }
 }

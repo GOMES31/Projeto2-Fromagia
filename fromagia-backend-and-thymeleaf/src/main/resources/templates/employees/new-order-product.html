@@ -2,12 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Fornecedores</title>
+  <title>Nova Encomenda</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
   <link th:href="@{/styles/global.css}" rel="stylesheet" />
   <link th:href="@{/styles/employees.css}" rel="stylesheet" />
-
 </head>
 <body>
 <div class="container-fluid d-flex align-items-center justify-content-center">
@@ -21,46 +20,32 @@
             <span class="label">Página Inicial</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/products/add}">
             <i class="bi bi-journal-plus"></i>
             <br>
             <span class="label">Adicionar Produtos</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/orders}">
             <i class="bi bi-cart2"></i>
             <br>
             <span class="label">Lista Encomendas</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/orders/new}">
             <i class="bi bi-cart-plus"></i>
             <br>
             <span class="label">Nova Encomenda</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/orders/pending}">
             <i class="bi bi-cart4"></i>
             <br>
             <span class="label">Encomendas Pendentes</span>
-          </a>
-        </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'PRODUCER'}">
-          <a class="nav-link" th:href="@{/employees/production-history}">
-            <i class="bi bi-clock-history"></i>
-            <br>
-            <span class="label">Histórico Produção</span>
-          </a>
-        </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'PRODUCER'}">
-          <a class="nav-link" th:href="@{/employees/production/new}">
-            <i class="bi bi-clipboard2-plus"></i>
-            <br>
-            <span class="label">Nova Produção</span>
           </a>
         </div>
         <div class="nav-item">
@@ -70,14 +55,14 @@
             <span class="label">Stock de Produtos</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/suppliers/find}">
             <i class="bi bi-search"></i>
             <br>
             <span class="label">Pesquisar Fornecedores</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/suppliers}">
             <i class="bi bi-truck"></i>
             <br>
@@ -90,33 +75,26 @@
       <a th:href="@{/auth/logout}" class="logout-icon">
         <i class="bi bi-box-arrow-right"></i>
       </a>
-      <div class="w-75 fr-center">
-        <p class="fr-table-title text-center">Fornecedores</p>
-      </div>
-      <div class="order-table w-90 mt-4 fr-center">
-        <table class="table table-striped fr-table">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Contacto</th>
-            <th>NIF</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr th:each="supplier : ${suppliers}">
-              <td th:text="${supplier.getId()}"></td>
-              <td th:text="${supplier.getName()}"></td>
-              <td th:text="${supplier.getEmail()}"></td>
-              <td th:text="${supplier.getContactNumber()}"></td>
-              <td th:text="${supplier.getNif()}"></td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(suppliers)}">
-              <td colspan="8" class="text-center">Nenhum fornecedor encontrado...</td>
-            </tr>
-          </tbody>
-        </table>
+      <h2 class="fr-form-title text-center">Nova Encomenda: Escolher Produto</h2>
+      <div class="form-container">
+        <form th:action="@{/employees/orders/send}" method="post" th:object="${orderDTO}">
+          <input type="hidden" th:field="*{supplierId}" />
+          <div class="mb-3">
+            <label for="stockItem" class="form-label">Selecionar Produto:</label>
+            <select class="form-control" id="stockItem" th:field="*{stockItemId}">
+              <option value="" disabled>Selecionar produto</option>
+              <option th:each="stockItem : ${stockItems}" th:value="${stockItem.getId()}" th:text="${stockItem.getProduct().getProductName()}"></option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="quantity" class="form-label">Quantidade:</label>
+            <input type="number" step="0.01" class="form-control" id="quantity" th:field="*{quantity}" th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid' : ''">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="fr-button btn">Enviar Encomenda</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

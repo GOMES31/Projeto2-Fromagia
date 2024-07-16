@@ -45,7 +45,7 @@
         </div>
         <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
           <a class="nav-link" th:href="@{/employees/orders/pending}">
-            <i class="bi bi-cart-plus"></i>
+            <i class="bi bi-cart4"></i>
             <br>
             <span class="label">Encomendas Pendentes</span>
           </a>
@@ -104,6 +104,7 @@
             <th>Preço</th>
             <th>Quantidade em Stock</th>
             <th>Tipo de Produto</th>
+            <th>Produto para venda?</th>
           </tr>
           </thead>
           <tbody>
@@ -114,21 +115,25 @@
             <td th:text="${stockItem.getProduct().getPrice()}"></td>
             <td th:text="${stockItem.getQuantity()}"></td>
             <td th:text="${stockItem.getProduct().getProductType()}"></td>
+            <td th:text="${stockItem.getForSale() ? 'SIM' : 'NÃO'}"></td>
           </tr>
           <tr th:if="${#lists.isEmpty(stockItems)}">
-            <td colspan="6" class="text-center">Nenhum produto em stock...</td>
+            <td colspan="7" class="text-center">Nenhum produto em stock...</td>
           </tr>
           </tbody>
           <tfoot>
           <tr>
-            <td colspan="3" class="text-center">
-              <a th:href="@{/employees/suppliers/add/{id}(id=${supplier.getId()})}" class="fr-table-button btn">
-                <i class="bi bi-plus-circle"></i><span class="label fr-btn-label">Contratar Fornecedor</span>
-              </a>
-            </td>
-            <td colspan="3" class="text-center">
-              <a th:href="@{/employees/suppliers/find}" class="fr-table-button btn">
-                <i class="bi bi-arrow-return-left"></i><span class="label fr-btn-label">Voltar ao menu de pesquisa</span>
+            <td colspan="7" class="text-center">
+              <form class="fr-center" th:action="@{/employees/suppliers/add/{id}(id=${supplier.getId()})}" method="post">
+                <button type="submit" class="btn btn-dark">
+                  <i class="bi bi-plus-circle"></i><span class="label fr-btn-label">Contratar Fornecedor</span>
+                </button>
+              </form>
+          </tr>
+          <tr>
+            <td colspan="1">
+              <a th:href="@{/employees/suppliers/find}" class="btn btn-dark">
+                <i class="bi bi-arrow-return-left"></i><span class="label fr-btn-label">Voltar</span>
               </a>
             </td>
           </tr>

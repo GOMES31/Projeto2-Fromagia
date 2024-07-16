@@ -216,6 +216,42 @@ public class SupplierController {
         return "redirect:/suppliers/stock";
     }
 
+    @GetMapping("/orders")
+    public String showOrdersPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        Supplier supplier = currentUser.getSupplier();
+
+        List<Order> orders = supplierService.getSupplierDeliveredRejectedReceivedOrders(supplier.getId());
+
+        model.addAttribute("orders",orders);
+
+        return "suppliers/orders";
+    }
+
+    @GetMapping("/orders/pending")
+    public String showPendingOrdersPage(Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        String authenticationResult = handleUserAuthenticationAndPermissions(currentUser, redirectAttributes);
+        if (authenticationResult != null) {
+            return authenticationResult;
+        }
+
+        Supplier supplier = currentUser.getSupplier();
+
+        List<Order> orders = supplierService.getSupplierPendingOrAcceptedOrders(supplier.getId());
+
+        model.addAttribute("orders",orders);
+
+        return "suppliers/pending-orders";
+    }
+
     private String handleUserAuthenticationAndPermissions(User currentUser, RedirectAttributes redirectAttributes) {
 
         if (Objects.isNull(currentUser)) {

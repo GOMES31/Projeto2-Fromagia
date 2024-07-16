@@ -56,7 +56,7 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Supplier> suppliers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
 
@@ -76,6 +76,10 @@ public class Company {
     public void addProductionHistory(ProductionHistory productionHistory) {
         this.productionHistory.add(productionHistory);
         productionHistory.setCompany(this);
+    }
+
+    public void addOrder(Order order){
+        this.orders.add(order);
     }
 
 }
