@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Encomendas</title>
+  <title>Fatura</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
   <link th:href="@{/styles/global.css}" rel="stylesheet" />
@@ -13,7 +13,6 @@
 <div class="container-fluid d-flex align-items-center justify-content-center">
   <div class="row w-100 h-100">
     <div class="col-md-2 fr-menu-left">
-
       <nav class="menu">
         <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/home}">
@@ -22,46 +21,32 @@
             <span class="label">Página Inicial</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/products/add}">
             <i class="bi bi-journal-plus"></i>
             <br>
             <span class="label">Adicionar Produtos</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/orders}">
             <i class="bi bi-cart2"></i>
             <br>
             <span class="label">Lista Encomendas</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/orders/new}">
             <i class="bi bi-cart-plus"></i>
             <br>
             <span class="label">Nova Encomenda</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/orders/pending}">
             <i class="bi bi-cart4"></i>
             <br>
             <span class="label">Encomendas Pendentes</span>
-          </a>
-        </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'PRODUCER'}">
-          <a class="nav-link" th:href="@{/employees/production-history}">
-            <i class="bi bi-clock-history"></i>
-            <br>
-            <span class="label">Histórico Produção</span>
-          </a>
-        </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'PRODUCER'}">
-          <a class="nav-link" th:href="@{/employees/production/new}">
-            <i class="bi bi-clipboard2-plus"></i>
-            <br>
-            <span class="label">Nova Produção</span>
           </a>
         </div>
         <div class="nav-item">
@@ -71,14 +56,14 @@
             <span class="label">Stock de Produtos</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/suppliers/find}">
             <i class="bi bi-search"></i>
             <br>
             <span class="label">Pesquisar Fornecedores</span>
           </a>
         </div>
-        <div class="nav-item" th:if="${employee.getCompanyPosition().toString() == 'MANAGER'}">
+        <div class="nav-item">
           <a class="nav-link" th:href="@{/employees/suppliers}">
             <i class="bi bi-truck"></i>
             <br>
@@ -98,45 +83,79 @@
       <a th:href="@{/auth/logout}" class="logout-icon">
         <i class="bi bi-box-arrow-right"></i>
       </a>
-      <div class="w-75 fr-center">
-        <p class="fr-table-title text-center">Histórico de Encomendas</p>
-      </div>
-      <div class="order-table w-90 mt-4 fr-center">
-        <table class="table table-striped fr-table">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Código</th>
-            <th>Data Receção</th>
-            <th>Data Envio</th>
-            <th>Estado</th>
-            <th>Total</th>
-            <th>Fatura</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr th:each="order : ${orders}">
-              <td th:text="${order.getId()}"></td>
-              <td th:text="${order.getOrderCode()}"></td>
-              <td th:text="${order.getReceivedDate()}"></td>
-              <td th:text="${order.getSentDate()}"></td>
-              <td th:text="${order.getOrderState()}"></td>
-              <td th:text="${order.getTotalAmount()}"></td>
-              <td>
-                <a th:if="${order.getOrderState().toString() == 'COMPLETED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
-                  <i class="bi bi-receipt fr-info"></i>
-                </a>
-              </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(orders)}">
-              <td colspan="7" class="text-center">Nenhuma encomenda encontrada...</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="form-container">
+        <div class="invoice-container">
+          <div class="invoice-header">
+            <h3>Fatura</h3>
+            <p><strong>Data de Emissão:</strong> <span th:text="${invoice.getEmissionDate()}"></span></p>
+          </div>
+          <div class="invoice-body">
+            <div th:if="${invoice.getClient() != null}">
+              <strong>Detalhes Vendedor:</strong>
+              <ul class="detail-list">
+                <li>
+                  <span th:text="${invoice.getCompany().getName()}"></span>
+                </li>
+                <li>
+                  <span th:text="${invoice.getCompany().getEmail()}"></span>
+                </li>
+              </ul>
+              <strong>Detalhes Comprador:</strong>
+              <ul class="detail-list">
+                <li>
+                  <span th:text="${invoice.getClient().getName()}"></span>
+                </li>
+                <li>
+                  <span th:text="${invoice.getClient().getEmail()}"></span>
+                </li>
+              </ul>
+            </div>
+            <div th:if="${invoice.getSupplier() != null}">
+              <strong>Detalhes Vendedor:</strong>
+              <ul class="detail-list">
+                <li>
+                  <span th:text="${invoice.getSupplier().getName()}"></span>
+                </li>
+                <li>
+                  <span th:text="${invoice.getSupplier().getEmail()}"></span>
+                </li>
+              </ul>
+              <strong>Detalhes Comprador:</strong>
+              <ul class="detail-list">
+                <li>
+                  <span th:text="${invoice.getCompany().getName()}"></span>
+                </li>
+                <li>
+                  <span th:text="${invoice.getCompany().getEmail()}"></span>
+                </li>
+              </ul>
+            </div>
+
+            <h2>Produtos:</h2>
+            <div class="invoice-item-labels">
+              <span class="invoice-label">Código</span>
+              <span class="invoice-label">Nome</span>
+              <span class="invoice-label">P. Unit.</span>
+              <span class="invoice-label">Qtd.</span>
+            </div>
+              <div class="invoice-item">
+                <span th:text="${invoice.getProductCode()}"></span>
+                <span th:text="${invoice.getProductName()}"></span>
+                <span th:text="${invoice.getUnitPrice()} + '€'"></span>
+                <span th:text="${invoice.getQuantity()}"></span>
+              </div>
+          </div>
+
+          <div class="invoice-footer">
+            <div class="invoice-total">
+              <span th:text="${invoice.getTotalPrice()} + '€'"></span>
+            </div>
+          </div>
+        </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 </body>

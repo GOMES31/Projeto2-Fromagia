@@ -80,8 +80,8 @@
               <td th:text="${order.getOrderState()}"></td>
               <td th:text="${order.getTotalAmount()}"></td>
               <td>
-                <a th:if="${order.getOrderState().toString() == 'RECEIVED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
-                  <i class="bi bi-receipt"></i>
+                <a th:if="${order.getOrderState().toString() == 'COMPLETED'}" th:href="@{/orders/invoices/{id}(id=${order.getId()})}">
+                  <i class="bi bi-receipt fr-info"></i>
                 </a>
               </td>
             </tr>

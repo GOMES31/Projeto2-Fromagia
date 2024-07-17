@@ -101,28 +101,30 @@
         <p class="fr-table-title text-center">Notificações</p>
       </div>
       <div class="notification-container">
-        <div class="notification-header">
-          <div class="row">
-            <div class="col-6">Message</div>
-            <div class="col-3 text-right">Date</div>
-            <div class="col-3 text-right">Created By</div>
-          </div>
-        </div>
-        <div th:if="${notifications.isEmpty()}">
-          <div class="notification-item">
-            <p class="text-center">No notifications available.</p>
-          </div>
-        </div>
-        <div th:each="notification : ${notifications}" class="notification-item">
-          <div class="notification-message" th:text="${notification.message}"></div>
-          <div class="notification-meta">
-            <small th:text="${notification.createdAt}"></small>
-            <small th:text="${notification.createdBy}"></small>
-          </div>
-        </div>
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Message</th>
+            <th scope="col">Data</th>
+            <th scope="col">Criada por</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:if="${notifications.isEmpty()}">
+            <td colspan="3" class="text-center">Nenhuma notificação.</td>
+          </tr>
+          <tr th:each="notification : ${notifications}">
+            <td th:utext="${notification.message}"></td>
+            <td th:text="${notification.createdAt}"></td>
+            <td th:text="${notification.createdBy}"></td>
+          </tr>
+          </tbody>
+        </table>
       </div>
       <div class="notification-actions">
-        <a class="btn btn-primary mt-3" th:href="@{/employees/notifications/new}">Nova Notificação</a>
+        <form th:action="@{/employees/notifications/new}" method="get">
+          <button type="submit" class="btn btn-primary mt-3">Nova Notificação</button>
+        </form>
       </div>
     </div>
   </div>
