@@ -5,7 +5,6 @@ Application for cheese production managament, with all steps including getting p
 
 ## FRONTEND
 Developed two frontends:
-  - JAVAFX
   - Thymeleaf and Bootstrap
 
 ## BACKEND
