@@ -171,7 +171,7 @@ public class EmployeeController {
         model.addAttribute("notifications",notifications);
         model.addAttribute("employee",currentUser.getEmployee());
 
-        return "employees/notifications";
+        return "employees/new-notification";
     }
 
     @PostMapping("/notifications/send")
@@ -186,8 +186,8 @@ public class EmployeeController {
 
         String createdBy = currentUser.getUsername();
 
-        message += "\n\n\n\nMensagem enviada por: " + currentUser.getEmployee().getName() +
-                    "\nCargo: " + currentUser.getEmployee().getCompanyPosition();
+        message += "<br><br><br><br>Mensagem enviada por: " + currentUser.getEmployee().getName() +
+                    "<br>Cargo: " + currentUser.getEmployee().getCompanyPosition();
 
         notificationService.createNotification(message, createdBy);
 

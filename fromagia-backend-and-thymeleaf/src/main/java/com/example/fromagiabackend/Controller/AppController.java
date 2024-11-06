@@ -1,11 +1,14 @@
 package com.example.fromagiabackend.Controller;
 
 import com.example.fromagiabackend.Entity.User;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-public class AppController {
+public class AppController implements ErrorController {
 
     @GetMapping("/")
     public String redirectToInitialForm(){
@@ -25,6 +28,18 @@ public class AppController {
             default:
                 return "redirect:/auth/login";
         }
+    }
+
+    @GetMapping("/error")
+    public String redirectToHomePage(HttpSession session, RedirectAttributes redirectAttributes){
+        User currentUser = (User) session.getAttribute("user");
+
+        if (currentUser == null) {
+            return "redirect:/auth/login";
+        }
+
+        redirectAttributes.addFlashAttribute("error", "Erro inesperado aconteceu!");
+        return getHomeRedirectUrl(currentUser);
     }
 
 }

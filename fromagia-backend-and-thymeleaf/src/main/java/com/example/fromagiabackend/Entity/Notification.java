@@ -23,6 +23,4 @@ public class Notification {
     @Column(name = "createdBy")
     private String createdBy;
 
-    @Column(name = "company_position")
-    private String companyPosition;
 }

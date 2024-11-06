@@ -166,19 +166,16 @@ public class OrderController {
 
 
         if((!Objects.equals(AccountType.EMPLOYEE,currentUser.getAccountType())) && (!Objects.equals(AccountType.SUPPLIER,currentUser.getAccountType()))){
-            redirectAttributes.addFlashAttribute("error", "Não tens permissões para aceder a esta página.");
+            if(Objects.equals(CompanyPosition.PRODUCER,currentUser.getEmployee().getCompanyPosition())){
+                redirectAttributes.addFlashAttribute("error", "Não tens permissões para aceder a esta página.");
+                return "redirect:/employees/home";
+            }
             return getHomeRedirectUrl(currentUser);
         }
 
-        if(Objects.equals(CompanyPosition.PRODUCER,currentUser.getEmployee().getCompanyPosition())){
-            redirectAttributes.addFlashAttribute("error", "Não tens permissões para aceder a esta página.");
-            return "redirect:/employees/home";
-        }
 
         Optional<Order> result = orderService.findById(id);
         Order order = result.get();
-
-        orderService.updateOrderStateAndSaveOrder(order);
 
         Invoice invoice = new Invoice();
 
@@ -186,21 +183,28 @@ public class OrderController {
         OrderItem orderItem = order.getOrderItems().get(0);
         Product product = orderItem.getProduct();
 
-        boolean enoughStock = checkIfStockIsEnough(product,orderItem.getQuantity());
-
-        if(!enoughStock){
-            if(Objects.equals(AccountType.EMPLOYEE,currentUser.getAccountType())){
+        if(Objects.equals(AccountType.EMPLOYEE,currentUser.getAccountType()) && Objects.nonNull(order.getClient())){
+            boolean enoughStock = checkIfStockIsEnough(product,order.getCompany().getStock(), orderItem.getQuantity());
+            if(!enoughStock){
+                BigDecimal shortFall = shortFallStock(product,order.getCompany().getStock(),orderItem.getQuantity());
                 String message = "Stock insuficiente do produto: " + product.getProductCode() + " - " + product.getProductName() +
-                        "\nPor favor produzir mais para concluir a encomenda!\n\n\n\n"+
+                        "<br>Quantidade minima a produzir para concluir a encomenda: " + shortFall +
+                        "<br>Por favor produzir mais para concluir a encomenda!<br><br><br><br>" +
                         "Mensagem enviada por: " + currentUser.getEmployee().getName() +
-                        "\nCargo: " + currentUser.getEmployee().getCompanyPosition();
+                        "<br>Cargo: " + currentUser.getEmployee().getCompanyPosition();
+
 
                 notificationService.createNotification(message, currentUser.getUsername());
                 return "redirect:/employees/notifications";
             }
-
+        }
+        if(Objects.equals(AccountType.SUPPLIER,currentUser.getAccountType())){
+            boolean enoughStock = checkIfStockIsEnough(product,order.getSupplier().getStock(),orderItem.getQuantity());
+            if(!enoughStock)
             if(Objects.equals(AccountType.SUPPLIER,currentUser.getAccountType())){
-                redirectAttributes.addFlashAttribute("error", "Stock insuficiente! Adicione stock antes de enviar a encomenda!.");
+                BigDecimal shortFall = shortFallStock(product,order.getSupplier().getStock(),orderItem.getQuantity());
+                redirectAttributes.addFlashAttribute("error", "Stock insuficiente! Quantidade minima a produzir do produto "
+                        + product.getProductName() + ": " + shortFall);
                 return "redirect:/suppliers/stock/add";
             }
         }
@@ -289,6 +293,7 @@ public class OrderController {
             BigDecimal newQuantity = supplierStockItem.getQuantity().subtract(orderItem.getQuantity());
 
             supplierStockItem.setQuantity(newQuantity);
+            orderService.updateOrderStateAndSaveOrder(order);
             stockItemService.save(supplierStockItem);
 
             redirectUrl = "redirect:/suppliers/orders";
@@ -298,6 +303,34 @@ public class OrderController {
         redirectAttributes.addFlashAttribute("message", "Encomenda enviada com sucesso.");
         return redirectUrl;
     }
+
+    @GetMapping("/invoices/{id}")
+    public String getInvoicePage(@PathVariable Integer id,HttpSession session,RedirectAttributes redirectAttributes,Model model){
+        User currentUser = (User) session.getAttribute("user");
+
+        if(Objects.isNull(currentUser)) {
+            redirectAttributes.addFlashAttribute("error", "Tens que fazer login para poder aceder ao conteúdo!");
+            return "redirect:/auth/login";
+        }
+
+        if(Objects.equals(AccountType.EMPLOYEE, currentUser.getAccountType()) && Objects.equals(CompanyPosition.PRODUCER,currentUser.getEmployee().getCompanyPosition())) {
+            redirectAttributes.addFlashAttribute("error", "Não tens permissões para aceder a esta página!");
+            return getHomeRedirectUrl(currentUser);
+        }
+        Optional<Invoice> result = invoiceService.findByOrderId(id);
+
+        if(result.isEmpty()){
+            redirectAttributes.addFlashAttribute("error", "Fatura não encontrada.");
+            return getHomeRedirectUrl(currentUser);
+        }
+
+        Invoice invoice = result.get();
+
+
+        model.addAttribute("invoice",invoice);
+        return redirectInvoicePage(currentUser);
+    }
+
 
     private String getSendOrdersPageUrl(User currentUser){
         String accountType = currentUser.getAccountType().toString().toLowerCase();
@@ -319,14 +352,37 @@ public class OrderController {
         }
     }
 
-    private boolean checkIfStockIsEnough(Product product, BigDecimal quantity){
-        StockItem stockItem = stockItemService.findByProduct(product);
+    private String redirectInvoicePage(User currentUser){
+        switch(currentUser.getAccountType()){
+            case COMPANY:
+                return "company/invoice";
+            case CLIENT:
+                return "clients/invoice";
+            case SUPPLIER:
+                return "suppliers/invoice";
+            case EMPLOYEE:
+                if(Objects.equals(CompanyPosition.PRODUCER,currentUser.getEmployee().getCompanyPosition())){
+                    return "redirect:/employees/home";
+                }
+                return "employees/invoice";
+            default:
+                return "redirect:/auth/login";
+        }
+    }
+
+    private boolean checkIfStockIsEnough(Product product, Stock stock,BigDecimal quantity){
+        StockItem stockItem = stockItemService.findByProductAndStock(product,stock);
 
         BigDecimal result = stockItem.getQuantity().subtract(quantity);
 
-        // Retorna true se for superior ou igual a 0 e false e for inferior
         return result.compareTo(BigDecimal.ZERO) >= 0;
 
+    }
+
+    private BigDecimal shortFallStock(Product product, Stock stock,BigDecimal quantity){
+        StockItem stockItem = stockItemService.findByProductAndStock(product,stock);
+
+        return stockItem.getQuantity().subtract(quantity);
     }
     private boolean checkIfUserHasRejectOrAcceptPermissions(User currentUser, Order order){
 

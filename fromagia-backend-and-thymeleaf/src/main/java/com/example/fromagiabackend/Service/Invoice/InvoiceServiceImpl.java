@@ -5,6 +5,8 @@ import com.example.fromagiabackend.Repository.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class InvoiceServiceImpl implements InvoiceService{
 
@@ -17,5 +19,10 @@ public class InvoiceServiceImpl implements InvoiceService{
     @Override
     public void save(Invoice invoice) {
         invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public Optional<Invoice> findByOrderId(Integer id) {
+        return invoiceRepository.findById(id);
     }
 }
