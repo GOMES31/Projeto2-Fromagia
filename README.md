@@ -1,9 +1,7 @@
 # Projeto2-Fromagia
 
 ## APPLICATION
-Fullstack Application developed for Software Engineering University Project.
-
-Application for cheese production managament, with all steps including getting products from suppliers to selling the cheese to clients.
+Application for cheese production management, with all steps including getting products from suppliers to selling the cheese to clients.
 
 ## FRONTEND
   - Thymeleaf and Bootstrap
